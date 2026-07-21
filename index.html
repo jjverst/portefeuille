@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Portefeuille</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* ---- Ontwerp: "stil grootboek" — inkt + parket + één messing-accent.
+   Bewust géén day-trading dashboard: kalm, precies, voor de lange termijn. ---- */
+:root{
+  --ink:#12151c;          /* achtergrond */
+  --ink2:#181c25;         /* panelen */
+  --ink3:#1f2430;         /* verhoogd */
+  --line:#2b3140;
+  --paper:#ece6da;        /* hoofdtekst, warm gebroken wit */
+  --muted:#8b93a3;        /* bijschriften */
+  --brass:#c6a15b;        /* merk-accent (niet de winst/verlies-kleur) */
+  --up:#5aa87a;           /* winst */
+  --down:#cf6b5b;         /* verlies */
+  --radius:14px;
+  --mono:'IBM Plex Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{
+  background:var(--ink);color:var(--paper);
+  font-family:'Inter',system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+  font-size:15px;line-height:1.5;
+  padding:max(16px,env(safe-area-inset-left)) 16px calc(40px + env(safe-area-inset-bottom));
+  -webkit-font-smoothing:antialiased;max-width:760px;margin:0 auto;
+}
+h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:500;margin:0}
+.mono{font-family:var(--mono)}
+.muted{color:var(--muted)}
+.up{color:var(--up)}.down{color:var(--down)}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
+button{font-family:inherit;cursor:pointer}
+a{color:var(--brass)}
+
+/* header */
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:14px 0 20px;border-bottom:1px solid var(--line);margin-bottom:22px}
+header h1{font-size:24px;letter-spacing:.01em}
+header .sync{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.4}
+header .sync b{color:var(--paper);font-weight:500}
+
+/* hero */
+.hero{margin-bottom:8px}
+.hero .val{font-family:'Fraunces',serif;font-size:44px;font-weight:500;letter-spacing:-.01em;line-height:1.05}
+.hero .sub{font-family:var(--mono);font-size:13px;margin-top:6px}
+.hero .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-family:var(--mono);font-size:12.5px;margin-left:4px}
+.hero .pill.up{background:rgba(90,168,122,.14)}
+.hero .pill.down{background:rgba(207,107,91,.14)}
+
+/* chart */
+.chartcard{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 12px 8px;margin:18px 0 26px}
+.chartcard h3{font-size:15px;font-family:'Inter';font-weight:600;margin:0 4px 6px;color:var(--paper)}
+.chartcard .leg{font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 4px 10px;display:flex;gap:14px;flex-wrap:wrap}
+.chartcard .leg i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:5px}
+svg{display:block;width:100%;height:auto}
+
+/* section heads */
+.sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 4px 12px}
+.sec h2{font-size:19px}
+.sec .eyebrow{margin-bottom:0}
+
+/* holding cards */
+.hold{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px}
+.hold .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.hold .nm{font-weight:600;font-size:15px}
+.hold .tk{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:1px}
+.hold .mv{text-align:right;font-family:var(--mono);font-size:16px;white-space:nowrap}
+.hold .pl{text-align:right;font-family:var(--mono);font-size:12.5px;margin-top:2px}
+.hold .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+.hold .grid div{background:var(--ink3);border-radius:8px;padding:8px 9px}
+.hold .grid .k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.hold .grid .v{font-family:var(--mono);font-size:13.5px;margin-top:3px}
+.hold .bar{height:3px;background:var(--ink3);border-radius:3px;margin-top:12px;overflow:hidden}
+.hold .bar i{display:block;height:100%;background:var(--brass)}
+
+/* allocation + rebalance */
+.panel{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.alloc-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-family:var(--mono);font-size:13px}
+.alloc-row .nm{width:64px;color:var(--paper)}
+.alloc-row .track{flex:1;height:8px;background:var(--ink3);border-radius:6px;position:relative;overflow:hidden}
+.alloc-row .track i{position:absolute;left:0;top:0;bottom:0;background:var(--brass);border-radius:6px}
+.alloc-row .track .tgt{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--paper);opacity:.5}
+.alloc-row .pct{width:96px;text-align:right;color:var(--muted)}
+.alloc-row .pct b{color:var(--paper);font-weight:500}
+.rb-input{display:flex;gap:8px;align-items:center;margin:14px 0 4px;flex-wrap:wrap}
+.rb-input label{font-size:13px;color:var(--muted)}
+input[type=number],input[type=text]{
+  background:var(--ink);border:1px solid var(--line);color:var(--paper);
+  font-family:var(--mono);font-size:14px;padding:8px 10px;border-radius:8px;width:120px;
+}
+input:focus{outline:2px solid var(--brass);outline-offset:1px}
+.rb-out{margin-top:10px;font-family:var(--mono);font-size:13px;line-height:1.9}
+.rb-out .row{display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:6px}
+
+/* controls */
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
+.btn{background:var(--ink3);border:1px solid var(--line);color:var(--paper);padding:10px 14px;border-radius:10px;font-size:13.5px;display:inline-flex;align-items:center;gap:7px}
+.btn:hover{border-color:var(--brass)}
+.btn.primary{background:var(--brass);border-color:var(--brass);color:#1a1206;font-weight:600}
+.btn.ghost{background:transparent}
+.hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
+
+/* price editor */
+.pe-row{display:flex;align-items:center;gap:10px;margin:10px 0;font-family:var(--mono);font-size:13px}
+.pe-row .nm{width:70px}
+.pe-row .stale{font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(207,107,91,.15);color:var(--down)}
+.pe-row .fresh{font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(90,168,122,.14);color:var(--up)}
+
+/* empty state */
+.empty{text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:var(--radius);margin:20px 0}
+.empty h2{font-size:22px;margin-bottom:8px}
+.empty p{color:var(--muted);max-width:420px;margin:0 auto 18px}
+
+/* modal */
+.modal-bg{position:fixed;inset:0;background:rgba(6,8,12,.72);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+.modal-bg.on{display:flex}
+.modal{background:var(--ink2);border:1px solid var(--line);border-radius:16px 16px 0 0;width:100%;max-width:760px;max-height:86vh;overflow:auto;padding:20px 18px calc(24px + env(safe-area-inset-bottom))}
+.modal h2{font-size:20px;margin-bottom:4px}
+.modal table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px;margin:14px 0}
+.modal th,.modal td{text-align:left;padding:6px 6px;border-bottom:1px solid var(--line)}
+.modal th{color:var(--muted);font-weight:500;font-size:10.5px;letter-spacing:.05em;text-transform:uppercase}
+.modal td.num{text-align:right}
+.status{font-family:var(--mono);font-size:12.5px;margin:10px 0;padding:10px 12px;border-radius:8px;background:var(--ink3)}
+.status.err{color:var(--down)}
+.status.ok{color:var(--up)}
+@media(min-width:560px){.modal-bg{align-items:center}.modal{border-radius:16px}}
+.foot{margin-top:34px;padding-top:16px;border-top:1px solid var(--line);font-size:11.5px;color:var(--muted);line-height:1.6}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Portefeuille</h1>
+  <div class="sync" id="syncStatus">lokaal opgeslagen</div>
+</header>
+
+<div id="app"></div>
+
+<div class="controls">
+  <label class="btn primary" for="importFile">&#8681; Saxo-export importeren</label>
+  <input id="importFile" type="file" accept=".xlsx,.xls" style="display:none">
+  <button class="btn" id="editPrices">&#9998; Koersen</button>
+  <button class="btn ghost" id="exportJson">Back-up &#8681;</button>
+  <button class="btn ghost" id="importJson">Herstellen &#8679;</button>
+  <input id="restoreFile" type="file" accept=".json" style="display:none">
+</div>
+<div class="hint" id="controlHint"></div>
+
+<div class="foot">
+  Je transacties blijven op dit toestel (en, indien ingesteld, in je eigen cloud). Ze worden nooit naar de openbare code gestuurd.
+  Koersen zijn indicatief en kunnen licht afwijken van je broker.
+</div>
+
+<!-- Import-voorbeeld modal -->
+<div class="modal-bg" id="importModal">
+  <div class="modal">
+    <h2>Import controleren</h2>
+    <div class="muted" style="font-size:13px">Controleer voor je bevestigt. Reeds bekende transacties worden overgeslagen.</div>
+    <div id="importBody"></div>
+    <div class="controls" style="margin-top:6px">
+      <button class="btn primary" id="confirmImport">Toevoegen</button>
+      <button class="btn ghost" id="cancelImport">Annuleren</button>
+    </div>
+  </div>
+</div>
+
+<!-- Koers-editor modal -->
+<div class="modal-bg" id="priceModal">
+  <div class="modal">
+    <h2>Koersen</h2>
+    <div class="muted" style="font-size:13px">Automatisch geladen uit <span class="mono">prices.json</span> wanneer beschikbaar. Hier kun je handmatig bijstellen.</div>
+    <div id="priceBody" style="margin-top:14px"></div>
+    <div class="controls" style="margin-top:6px">
+      <button class="btn primary" id="savePrices">Bewaren</button>
+      <button class="btn ghost" id="closePrices">Sluiten</button>
+    </div>
+  </div>
+</div>
+
+<!-- SheetJS voor het lezen van de Saxo .xlsx -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+/* ============================================================
+   CONFIG
+   ============================================================ */
+
+// Yahoo-tickers per ISIN (voor referentie / handmatige opzoeking).
+const META = {
+  'IE00B4L5Y983':{name:'iShares Core MSCI World',       symbol:'IWDA', yahoo:'IWDA.AS', order:1},
+  'IE00BCBJG560':{name:'SPDR MSCI World Small Cap',      symbol:'ZPRS', yahoo:'ZPRS.DE', order:2},
+  'IE00BKM4GZ66':{name:'iShares Core MSCI EM IMI',       symbol:'EMIM', yahoo:'EMIM.AS', order:3},
+};
+
+// ---- Firebase-sync (optioneel). Vul dit later in met je eigen projectgegevens.
+//      Zolang dit leeg is, werkt de app gewoon lokaal (localStorage).
+const FIREBASE_CONFIG = null; /* bv:
+const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", appId:"..." };
+*/
+
+/* ============================================================
+   STATE + OPSLAG
+   ============================================================ */
+const LS_TX = 'pf_tx_v1';
+const LS_PRICES = 'pf_prices_v1';
+const LS_TARGETS = 'pf_targets_v1';
+
+let TX = load(LS_TX, []);            // transacties
+let PRICES = load(LS_PRICES, {});    // {isin:{price,date,source}}
+let TARGETS = load(LS_TARGETS, null);
+
+function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
+function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function persist(){save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);cloudPush();}
+
+const $=id=>document.getElementById(id);
+const eur=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR'}).format(n||0);
+const eur0=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
+const pct=n=>(n>=0?'+':'')+n.toFixed(1)+'%';
+const todayISO=()=>new Date().toISOString().slice(0,10);
+function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
+
+/* ============================================================
+   SAXO-PARSER  (gevalideerd op de echte export)
+   - juiste tabblad: "Trades"
+   - kolomkoppen genormaliseerd (harde spatie U+00A0 -> gewone spatie)
+   - datum = Excel-serienummer -> ISO
+   ============================================================ */
+function normKeys(o){const n={};for(const k in o){n[k.replace(/\u00a0/g,' ').replace(/\s+/g,' ').trim()]=o[k];}return n;}
+function excelToISO(serial){
+  if(typeof serial==='string'){ // soms al een datumtekst
+    const d=new Date(serial); if(!isNaN(d)) return d.toISOString().slice(0,10);
+  }
+  const days=Math.floor(serial);
+  return new Date(Date.UTC(1899,11,30)+days*86400000).toISOString().slice(0,10);
+}
+function parseSaxo(arrbuf){
+  const wb=XLSX.read(arrbuf,{type:'array'});
+  const sheetName=wb.SheetNames.find(n=>/trade/i.test(n))||wb.SheetNames[0];
+  const raw=XLSX.utils.sheet_to_json(wb.Sheets[sheetName],{raw:true});
+  const out=[];
+  for(const r0 of raw){
+    const r=normKeys(r0);
+    const isin=r['Instrument ISIN']; if(!isin) continue;
+    const qtyRaw=r['Traded Quantity'];
+    const qty=Number(qtyRaw);
+    if(!qty||isNaN(qty)) continue;
+    const side=String(r['Event']||'').trim().split(' ')[0]||'Buy';
+    out.push({
+      id: String(r['Trade ID']||(isin+'-'+r['Trade Date']+'-'+qtyRaw)),
+      date: excelToISO(r['Trade Date']),
+      isin,
+      symbol: (META[isin]&&META[isin].symbol)||String(r['Instrument Symbol']||'').split(':')[0],
+      name: (META[isin]&&META[isin].name)||r['Instrument'],
+      side,
+      qty,
+      price: Number(r['Price'])||0,
+      value: Math.abs(Number(r['Traded Value'])||0),
+      fees: Math.abs(Number(r['Total cost'])||0),
+    });
+  }
+  return out;
+}
+
+/* ============================================================
+   BEREKENINGEN
+   ============================================================ */
+function positions(){
+  const p={};
+  for(const t of TX){
+    const s=(t.side||'').toLowerCase()==='sell'?-1:1;
+    if(!p[t.isin])p[t.isin]={isin:t.isin,name:t.name,symbol:t.symbol,qty:0,invested:0,fees:0};
+    p[t.isin].qty+=s*t.qty;
+    p[t.isin].invested+=s*t.value;
+    p[t.isin].fees+=t.fees;
+  }
+  return Object.values(p)
+    .filter(x=>x.qty>1e-6)
+    .sort((a,b)=>((META[a.isin]||{}).order||9)-((META[b.isin]||{}).order||9));
+}
+function priceFor(isin){const e=PRICES[isin];return e&&e.price?e.price:null;}
+function enrich(){
+  const pos=positions();
+  let totVal=0,totInv=0,totFees=0,haveAll=true;
+  for(const p of pos){
+    p.avg=p.invested/p.qty;
+    p.price=priceFor(p.isin);
+    p.value=p.price!=null?p.price*p.qty:null;
+    p.pl=p.value!=null?p.value-p.invested:null;
+    p.plPct=p.value!=null?(p.pl/p.invested)*100:null;
+    if(p.value==null)haveAll=false; else totVal+=p.value;
+    totInv+=p.invested;totFees+=p.fees;
+  }
+  const pl=haveAll?totVal-totInv:null;
+  for(const p of pos)p.weight=(haveAll&&totVal>0)?(p.value/totVal)*100:(p.invested/totInv)*100;
+  return {pos,totVal:haveAll?totVal:null,totInv,totFees,pl,plPct:pl!=null?(pl/totInv)*100:null,haveAll};
+}
+function defaultTargets(pos,totInv){
+  const t={};for(const p of pos)t[p.isin]=Math.round((p.invested/totInv)*100);
+  return t;
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function render(){
+  const app=$('app');
+  if(TX.length===0){
+    app.innerHTML=`<div class="empty">
+      <h2>Nog geen transacties</h2>
+      <p>Exporteer je trades uit Saxo (Portfolio &rarr; Transacties &rarr; Export &rarr; Excel) en importeer het bestand hieronder. Je gegevens blijven op dit toestel.</p>
+      <label class="btn primary" for="importFile">&#8681; Saxo-export importeren</label>
+    </div>`;
+    updateControlHint();return;
+  }
+  const e=enrich();
+  if(!TARGETS)TARGETS=defaultTargets(e.pos,e.totInv);
+
+  const plClass=e.pl==null?'':(e.pl>=0?'up':'down');
+  const heroVal = e.totVal!=null ? eur(e.totVal) : eur(e.totInv);
+  const heroLabel = e.totVal!=null ? 'huidige waarde' : 'geïnvesteerd (koersen ontbreken)';
+
+  let html=`<div class="hero">
+    <div class="eyebrow">${heroLabel}</div>
+    <div class="val">${heroVal}</div>
+    <div class="sub muted">
+      ingelegd ${eur(e.totInv)}
+      ${e.pl!=null?`<span class="pill ${plClass}">${e.pl>=0?'▲':'▼'} ${eur(Math.abs(e.pl))} · ${pct(e.plPct)}</span>`:''}
+    </div>
+  </div>`;
+
+  html+=renderChart(e);
+
+  // Posities
+  html+=`<div class="sec"><h2>Posities</h2><span class="eyebrow">${e.pos.length} fondsen</span></div>`;
+  for(const p of e.pos){
+    const plc=p.pl==null?'':(p.pl>=0?'up':'down');
+    html+=`<div class="hold">
+      <div class="top">
+        <div><div class="nm">${p.name}</div><div class="tk">${p.symbol} · ${p.isin}</div></div>
+        <div>
+          <div class="mv">${p.value!=null?eur(p.value):'—'}</div>
+          <div class="pl ${plc}">${p.pl!=null?`${p.pl>=0?'+':''}${eur(p.pl)} · ${pct(p.plPct)}`:'koers onbekend'}</div>
+        </div>
+      </div>
+      <div class="grid">
+        <div><div class="k">Aantal</div><div class="v">${p.qty}</div></div>
+        <div><div class="k">Gem. koers</div><div class="v">${eur(p.avg)}</div></div>
+        <div><div class="k">Koers nu</div><div class="v">${p.price!=null?eur(p.price):'—'}</div></div>
+        <div><div class="k">Gewicht</div><div class="v">${p.weight.toFixed(1)}%</div></div>
+      </div>
+      <div class="bar"><i style="width:${Math.min(100,p.weight)}%"></i></div>
+    </div>`;
+  }
+
+  // Allocatie + herbalanceren
+  html+=`<div class="sec"><h2>Allocatie & herbalanceren</h2></div>`;
+  html+=`<div class="panel"><div class="muted" style="font-size:12.5px;margin-bottom:10px">Balk = huidig gewicht · streepje = jouw doel</div>`;
+  for(const p of e.pos){
+    const tgt=TARGETS[p.isin]||0;
+    html+=`<div class="alloc-row">
+      <span class="nm">${p.symbol}</span>
+      <span class="track"><i style="width:${Math.min(100,p.weight)}%"></i><span class="tgt" style="left:${Math.min(100,tgt)}%"></span></span>
+      <span class="pct"><b>${p.weight.toFixed(1)}%</b> / ${tgt}%</span>
+    </div>`;
+  }
+  html+=`<div class="rb-input">
+      <label>Nieuwe inleg</label>
+      <input type="number" id="rbAmount" placeholder="bv. 2000" inputmode="decimal">
+      <button class="btn" id="rbTargets">Doelen aanpassen</button>
+    </div>
+    <div class="rb-out" id="rbOut"></div>
+  </div>`;
+
+  app.innerHTML=html;
+  drawChartAxis(e);
+  wireRebalance(e);
+  updateControlHint();
+}
+
+/* ---- Waardeverloop-grafiek ----
+   Met history.json: portefeuillewaarde per dag vs. cumulatief ingelegd.
+   Zonder history.json: ingelegd-in-stappen + huidige-waarde-punt (eerlijke fallback). */
+let HISTORY=null; // {isin:[[date,price],...]}
+function renderChart(e){
+  return `<div class="chartcard">
+    <h3>Waardeverloop</h3>
+    <div class="leg">
+      <span><i style="background:var(--brass)"></i>waarde</span>
+      <span><i style="background:var(--muted)"></i>ingelegd</span>
+      <span id="chartNote" class="muted"></span>
+    </div>
+    <div id="chartHolder"></div>
+  </div>`;
+}
+function buildSeries(e){
+  // cumulatief ingelegd op elke transactiedatum
+  const dates=[...new Set(TX.map(t=>t.date))].sort();
+  const invByDate=[];let cum=0;
+  const perDay={};for(const t of TX){perDay[t.date]=(perDay[t.date]||0)+(((t.side||'').toLowerCase()==='sell'?-1:1)*t.value);}
+  for(const d of dates){cum+=perDay[d];invByDate.push([d,cum]);}
+
+  let value=null;
+  if(HISTORY){
+    // verzamel alle beursdagen uit history
+    const allDates=new Set();
+    for(const isin in HISTORY)for(const [d] of HISTORY[isin])allDates.add(d);
+    const sorted=[...allDates].sort().filter(d=>d>=dates[0]);
+    const lastPrice={};value=[];
+    for(const d of sorted){
+      for(const isin in HISTORY){
+        const hit=HISTORY[isin].find(x=>x[0]===d);if(hit)lastPrice[isin]=hit[1];
+      }
+      // aantallen aangehouden op datum d
+      let v=0;
+      const heldQty={};
+      for(const t of TX){if(t.date<=d){const s=(t.side||'').toLowerCase()==='sell'?-1:1;heldQty[t.isin]=(heldQty[t.isin]||0)+s*t.qty;}}
+      let ok=true;
+      for(const isin in heldQty){if(heldQty[isin]<=0)continue;if(lastPrice[isin]==null){ok=false;break;}v+=heldQty[isin]*lastPrice[isin];}
+      if(ok&&v>0)value.push([d,v]);
+    }
+  }else if(e.totVal!=null){
+    value=[[dates[0],invByDate[0][1]],[todayISO(),e.totVal]];
+  }
+  return {invByDate,value,dates};
+}
+function drawChartAxis(e){
+  const holder=$('chartHolder');if(!holder)return;
+  const s=buildSeries(e);
+  const note=$('chartNote');
+  if(!HISTORY&&e.totVal!=null&&note)note.textContent='· lijn wordt fijnmaziger zodra history.json meekomt';
+  if(!HISTORY&&e.totVal==null&&note)note.textContent='· voeg koersen toe voor de waardelijn';
+
+  const W=680,H=220,P=34,PB=22;
+  const all=[...s.invByDate.map(d=>d[1])];
+  if(s.value)s.value.forEach(d=>all.push(d[1]));
+  const ymax=Math.max(...all)*1.08,ymin=0;
+  const t0=new Date(s.dates[0]).getTime();
+  const t1=Math.max(new Date(todayISO()).getTime(),new Date(s.dates[s.dates.length-1]).getTime());
+  const X=t=>P+((new Date(t).getTime()-t0)/(t1-t0||1))*(W-P-8);
+  const Y=v=>H-PB-((v-ymin)/(ymax-ymin||1))*(H-PB-8);
+
+  function path(arr,step){
+    if(!arr||!arr.length)return'';
+    let d='';arr.forEach((pt,i)=>{
+      const x=X(pt[0]),y=Y(pt[1]);
+      if(i===0)d+=`M${x.toFixed(1)},${y.toFixed(1)}`;
+      else if(step)d+=`L${x.toFixed(1)},${Y(arr[i-1][1]).toFixed(1)}L${x.toFixed(1)},${y.toFixed(1)}`;
+      else d+=`L${x.toFixed(1)},${y.toFixed(1)}`;
+    });return d;
+  }
+  const invPath=path(s.invByDate,true);
+  const valPath=s.value?path(s.value,!HISTORY?false:false):'';
+  // vlak onder de waardelijn
+  let area='';
+  if(s.value&&s.value.length){
+    area=valPath+`L${X(s.value[s.value.length-1][0]).toFixed(1)},${Y(0).toFixed(1)}L${X(s.value[0][0]).toFixed(1)},${Y(0).toFixed(1)}Z`;
+  }
+  // y-labels
+  const yl=[0,ymax/2,ymax].map(v=>`<text x="${P-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${eur0(v)}</text>`).join('');
+  // x-labels (eerste + laatste)
+  const xf=new Date(s.dates[0]).toLocaleDateString('nl-BE',{month:'short',year:'2-digit'});
+  const xl=new Date(todayISO()).toLocaleDateString('nl-BE',{month:'short',year:'2-digit'});
+
+  holder.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="waardeverloop">
+    <line x1="${P}" y1="${Y(0)}" x2="${W-4}" y2="${Y(0)}" stroke="#2b3140"/>
+    ${area?`<path d="${area}" fill="rgba(198,161,91,.10)" stroke="none"/>`:''}
+    <path d="${invPath}" fill="none" stroke="#8b93a3" stroke-width="1.5" stroke-dasharray="4 3"/>
+    ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.2"/>`:''}
+    ${yl}
+    <text x="${P}" y="${H-6}" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${xf}</text>
+    <text x="${W-4}" y="${H-6}" text-anchor="end" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${xl}</text>
+  </svg>`;
+}
+
+/* ---- Herbalanceren ---- */
+function wireRebalance(e){
+  const out=$('rbOut'),amt=$('rbAmount');
+  function calc(){
+    const add=Number(amt.value)||0;
+    const futureTotal=(e.totVal!=null?e.totVal:e.totInv)+add;
+    let rows='';
+    for(const p of e.pos){
+      const tgt=(TARGETS[p.isin]||0)/100;
+      const targetVal=futureTotal*tgt;
+      const cur=p.value!=null?p.value:p.invested;
+      const buy=targetVal-cur;
+      const px=p.price||p.avg;
+      const shares=px?buy/px:0;
+      rows+=`<div class="row"><span>${p.symbol}</span><span>${buy>=0?'koop':'verkoop'} ${eur(Math.abs(buy))} ${px?`· ${Math.abs(shares).toFixed(1)} st.`:''}</span></div>`;
+    }
+    out.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:4px">Om naar je doelen te bewegen${add?` na inleg van ${eur(add)}`:''}:</div>${rows}`;
+  }
+  amt.oninput=calc;calc();
+  $('rbTargets').onclick=openTargets;
+}
+function openTargets(){
+  const e=enrich();
+  const cur=e.pos.map(p=>`${p.symbol}=${TARGETS[p.isin]||0}`).join('  ');
+  const input=prompt('Doelgewichten in %, formaat "IWDA=80 ZPRS=15 EMIM=5":',cur);
+  if(!input)return;
+  const map={};input.split(/\s+/).forEach(tok=>{const [k,v]=tok.split('=');if(k&&v)map[k.trim().toUpperCase()]=Number(v);});
+  for(const p of e.pos){const sym=p.symbol.toUpperCase();if(map[sym]!=null)TARGETS[p.isin]=map[sym];}
+  const sum=e.pos.reduce((s,p)=>s+(TARGETS[p.isin]||0),0);
+  if(Math.round(sum)!==100)alert('Let op: je doelen tellen op tot '+sum+'% in plaats van 100%. Ze zijn bewaard, maar de herbalanceer-bedragen kloppen pas als het samen 100% is.');
+  persist();render();
+}
+
+function updateControlHint(){
+  const h=$('controlHint');
+  if(TX.length===0){h.textContent='';return;}
+  const n=Object.keys(PRICES).length;
+  const stale=Object.values(PRICES).some(p=>p.date&&daysBetween(p.date,todayISO())>4);
+  h.textContent = n===0
+    ? 'Nog geen koersen — voeg ze toe via “Koersen”, of stel later de automatische feed in.'
+    : (stale?'Sommige koersen zijn ouder dan 4 dagen.':'Koersen actueel.');
+}
+
+/* ============================================================
+   IMPORT-FLOW
+   ============================================================ */
+let pendingImport=[];
+$('importFile').addEventListener('change',ev=>{
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const parsed=parseSaxo(new Uint8Array(rd.result));
+      const known=new Set(TX.map(t=>t.id));
+      pendingImport=parsed.filter(t=>!known.has(t.id));
+      showImportPreview(parsed.length,pendingImport);
+    }catch(err){alert('Kon het bestand niet lezen. Is dit de Saxo-trades-export (.xlsx)?');}
+  };
+  rd.readAsArrayBuffer(f);
+  ev.target.value='';
+});
+function showImportPreview(total,rows){
+  const body=$('importBody');
+  if(rows.length===0){
+    body.innerHTML=`<div class="status ok">Alle ${total} transacties zijn al bekend — niets nieuws.</div>`;
+    $('confirmImport').style.display='none';
+  }else{
+    $('confirmImport').style.display='';
+    let t=`<div class="status ok">${rows.length} nieuwe transactie(s) gevonden${total>rows.length?` (${total-rows.length} al bekend)`:''}.</div>
+    <table><thead><tr><th>Datum</th><th>Fonds</th><th class="num">Aantal</th><th class="num">Koers</th></tr></thead><tbody>`;
+    for(const r of rows)t+=`<tr><td>${r.date}</td><td>${r.symbol}</td><td class="num">${r.side.toLowerCase()==='sell'?'-':''}${r.qty}</td><td class="num">${eur(r.price)}</td></tr>`;
+    t+='</tbody></table>';
+    body.innerHTML=t;
+  }
+  $('importModal').classList.add('on');
+}
+$('confirmImport').onclick=()=>{
+  TX=TX.concat(pendingImport);
+  // dedupe op id voor de zekerheid
+  const seen=new Set();TX=TX.filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));
+  pendingImport=[];persist();$('importModal').classList.remove('on');render();
+};
+$('cancelImport').onclick=()=>{pendingImport=[];$('importModal').classList.remove('on');};
+
+/* ============================================================
+   KOERS-EDITOR
+   ============================================================ */
+$('editPrices').onclick=openPriceEditor;
+function openPriceEditor(){
+  const pos=positions();
+  let html='';
+  const list=pos.length?pos:Object.keys(META).map(isin=>({isin,symbol:META[isin].symbol,name:META[isin].name}));
+  for(const p of list){
+    const e=PRICES[p.isin]||{};
+    const age=e.date?daysBetween(e.date,todayISO()):null;
+    const badge=age==null?'':(age>4?`<span class="stale">${age} d oud</span>`:`<span class="fresh">${age===0?'vandaag':age+' d'}</span>`);
+    html+=`<div class="pe-row">
+      <span class="nm">${p.symbol}</span>
+      <input type="number" step="0.01" inputmode="decimal" data-isin="${p.isin}" value="${e.price!=null?e.price:''}" placeholder="koers €">
+      ${badge}
+    </div>`;
+  }
+  html+=`<div class="hint">Actuele koers even bij je broker checken? <a href="https://www.saxoinvestor.com" target="_blank" rel="noopener">Open Saxo</a></div>`;
+  $('priceBody').innerHTML=html;
+  $('priceModal').classList.add('on');
+}
+$('savePrices').onclick=()=>{
+  document.querySelectorAll('#priceBody input[data-isin]').forEach(inp=>{
+    const v=Number(inp.value);
+    if(v>0)PRICES[inp.dataset.isin]={price:v,date:todayISO(),source:'manueel'};
+  });
+  persist();$('priceModal').classList.remove('on');render();
+};
+$('closePrices').onclick=()=>$('priceModal').classList.remove('on');
+
+/* ============================================================
+   BACK-UP / HERSTEL (JSON)
+   ============================================================ */
+$('exportJson').onclick=()=>{
+  const blob=new Blob([JSON.stringify({tx:TX,prices:PRICES,targets:TARGETS,exported:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);
+  a.download='portefeuille-backup-'+todayISO()+'.json';a.click();URL.revokeObjectURL(a.href);
+};
+$('importJson').onclick=()=>$('restoreFile').click();
+$('restoreFile').addEventListener('change',ev=>{
+  const f=ev.target.files[0];if(!f)return;
+  const rd=new FileReader();
+  rd.onload=()=>{try{
+    const d=JSON.parse(rd.result);
+    if(d.tx){const seen=new Set();TX=[...TX,...d.tx].filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));}
+    if(d.prices)PRICES={...PRICES,...d.prices};
+    if(d.targets)TARGETS=d.targets;
+    persist();render();
+  }catch(e){alert('Ongeldig back-upbestand.');}};
+  rd.readAsText(f);ev.target.value='';
+});
+
+/* ============================================================
+   KOERS-FEED (prices.json) + GESCHIEDENIS (history.json)
+   Beide staan op dezelfde GitHub Pages-oorsprong -> geen CORS.
+   ============================================================ */
+async function loadFeeds(){
+  try{
+    const r=await fetch('prices.json',{cache:'no-store'});
+    if(r.ok){
+      const j=await r.json();
+      if(j&&j.prices){
+        for(const isin in j.prices){
+          const cur=PRICES[isin];
+          const feed=j.prices[isin];
+          // feed heeft voorrang tenzij jij vandaag handmatig bijstelde
+          if(!cur||cur.source!=='manueel'||cur.date!==todayISO()){
+            PRICES[isin]={price:feed.price,date:feed.date||j.updated||todayISO(),source:'feed'};
+          }
+        }
+        save(LS_PRICES,PRICES);
+      }
+    }
+  }catch(e){/* geen feed -> handmatige koersen blijven gelden */}
+  try{
+    const r=await fetch('history.json',{cache:'no-store'});
+    if(r.ok){HISTORY=await r.json();}
+  }catch(e){/* geen geschiedenis -> fallback-lijn */}
+  render();
+}
+
+/* ============================================================
+   FIREBASE-SYNC (optioneel, laadt alleen bij ingevulde config)
+   ============================================================ */
+let cloudPush=()=>{};
+async function initCloud(){
+  if(!FIREBASE_CONFIG){$('syncStatus').innerHTML='lokaal opgeslagen';return;}
+  try{
+    const [{initializeApp},auth,fs]=await Promise.all([
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js'),
+      import('https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js'),
+    ]);
+    const app=initializeApp(FIREBASE_CONFIG);
+    const A=auth.getAuth(app);const db=fs.getFirestore(app);
+    auth.onAuthStateChanged(A,async user=>{
+      if(!user){$('syncStatus').innerHTML='<b>Aanmelden</b> voor sync';$('syncStatus').style.cursor='pointer';
+        $('syncStatus').onclick=()=>auth.signInWithPopup(A,new auth.GoogleAuthProvider());return;}
+      $('syncStatus').innerHTML='gesynct als <b>'+(user.displayName||'jij').split(' ')[0]+'</b>';
+      const ref=fs.doc(db,'portfolios',user.uid);
+      // binnenhalen + samenvoegen
+      const snap=await fs.getDoc(ref);
+      if(snap.exists()){
+        const d=snap.data();
+        if(d.tx){const seen=new Set();TX=[...TX,...d.tx].filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));}
+        if(d.prices)PRICES={...d.prices,...PRICES};
+        if(d.targets&&!TARGETS)TARGETS=d.targets;
+        save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);render();
+      }
+      cloudPush=()=>fs.setDoc(ref,{tx:TX,prices:PRICES,targets:TARGETS,updated:Date.now()}).catch(()=>{});
+      cloudPush();
+    });
+  }catch(e){$('syncStatus').textContent='sync niet beschikbaar';}
+}
+
+/* ============================================================
+   START
+   ============================================================ */
+render();
+loadFeeds();
+initCloud();
+</script>
+</body>
+</html>

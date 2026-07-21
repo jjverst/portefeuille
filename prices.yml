@@ -1,0 +1,39 @@
+name: Koersen bijwerken
+
+on:
+  schedule:
+    # Elke weekdag om 18:00 UTC (~19:00-20:00 Belgische tijd), ruim na de Europese slotkoers.
+    - cron: "0 18 * * 1-5"
+  workflow_dispatch: {}   # laat je 'm ook handmatig starten via de Actions-tab
+
+permissions:
+  contents: write         # nodig om prices.json/history.json terug te committen
+
+concurrency:
+  group: prices
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Koersen ophalen
+        run: python scripts/fetch_prices.py
+
+      - name: Wijzigingen committen
+        run: |
+          git config user.name "prices-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add prices.json history.json
+          if git diff --staged --quiet; then
+            echo "Geen koerswijziging vandaag."
+          else
+            git commit -m "Koersen bijgewerkt $(date -u +%F)"
+            git push
+          fi

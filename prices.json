@@ -1,0 +1,23 @@
+{
+  "updated": "2026-07-22",
+  "prices": {
+    "IE00B4L5Y983": {
+      "price": 125.39,
+      "date": "2026-07-22",
+      "ccy": "EUR",
+      "symbol": "IWDA.AS"
+    },
+    "IE00BCBJG560": {
+      "price": 128.08,
+      "date": "2026-07-22",
+      "ccy": "EUR",
+      "symbol": "ZPRS.DE"
+    },
+    "IE00BKM4GZ66": {
+      "price": 46.23,
+      "date": "2026-07-22",
+      "ccy": "EUR",
+      "symbol": "EMIM.AS"
+    }
+  }
+}

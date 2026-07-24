@@ -54,11 +54,21 @@ header .sync b{color:var(--paper);font-weight:500}
 .hero .pill.up{background:rgba(90,168,122,.14)}
 .hero .pill.down{background:rgba(207,107,91,.14)}
 
+/* demo-banner */
+.demo-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;background:rgba(198,161,91,.10);border:1px solid rgba(198,161,91,.38);border-radius:12px;padding:12px 14px;margin:0 0 18px}
+.demo-banner .txt{font-size:12.5px;line-height:1.5;color:var(--paper);flex:1;min-width:200px}
+.demo-banner .txt b{color:var(--brass);font-weight:600}
+.demo-banner .btn{padding:8px 12px;font-size:12.5px;white-space:nowrap}
+
 /* chart */
-.chartcard{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 12px 8px;margin:18px 0 26px}
-.chartcard h3{font-size:15px;font-family:'Inter';font-weight:600;margin:0 4px 6px;color:var(--paper)}
-.chartcard .leg{font-family:var(--mono);font-size:11px;color:var(--muted);margin:0 4px 10px;display:flex;gap:14px;flex-wrap:wrap}
-.chartcard .leg i{display:inline-block;width:10px;height:2px;vertical-align:middle;margin-right:5px}
+.chartcard{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 14px 12px;margin:18px 0 26px}
+.chartcard h3{font-size:15px;font-family:'Inter';font-weight:600;margin:0 2px 10px;color:var(--paper)}
+.readout{display:flex;align-items:baseline;gap:16px;flex-wrap:wrap;margin:0 2px 10px;min-height:20px;font-family:var(--mono);font-size:13.5px}
+.readout .ro-date{color:var(--muted);font-size:12px;letter-spacing:.02em}
+.readout .ro-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.readout .ro-item i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.readout .ro-item .lbl{color:var(--muted);font-size:11px}
+.chartwrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 svg{display:block;width:100%;height:auto}
 
 /* section heads */
@@ -73,10 +83,10 @@ svg{display:block;width:100%;height:auto}
 .hold .tk{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:1px}
 .hold .mv{text-align:right;font-family:var(--mono);font-size:16px;white-space:nowrap}
 .hold .pl{text-align:right;font-family:var(--mono);font-size:12.5px;margin-top:2px}
-.hold .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
-.hold .grid div{background:var(--ink3);border-radius:8px;padding:8px 9px}
+.hold .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:12px}
+.hold .grid div{background:var(--ink3);border-radius:8px;padding:9px 11px;min-width:0}
 .hold .grid .k{font-family:var(--mono);font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.hold .grid .v{font-family:var(--mono);font-size:13.5px;margin-top:3px}
+.hold .grid .v{font-family:var(--mono);font-size:14.5px;margin-top:4px}
 .hold .bar{height:3px;background:var(--ink3);border-radius:3px;margin-top:12px;overflow:hidden}
 .hold .bar i{display:block;height:100%;background:var(--brass)}
 
@@ -184,6 +194,20 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
   </div>
 </div>
 
+<!-- Doelverdeling modal -->
+<div class="modal-bg" id="targetModal">
+  <div class="modal">
+    <h2>Doelverdeling</h2>
+    <div class="muted" style="font-size:13px">Streefpercentage per fonds. Samen bij voorkeur 100%.</div>
+    <div id="targetBody" style="margin-top:14px"></div>
+    <div id="targetSum" class="mono" style="font-size:12.5px;margin:8px 2px"></div>
+    <div class="controls" style="margin-top:6px">
+      <button class="btn primary" id="saveTargets">Bewaren</button>
+      <button class="btn ghost" id="closeTargets">Sluiten</button>
+    </div>
+  </div>
+</div>
+
 <!-- SheetJS voor het lezen van de Saxo .xlsx -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
@@ -205,6 +229,60 @@ const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", appId
 */
 
 /* ============================================================
+   DEMO-MODUS  (fictief voorbeeld vóór je eigen import)
+   €25.000 over vier momenten, herbalancerend naar 80/15/5.
+   Koersen zijn benaderende historische EUR-niveaus — puur illustratief.
+   Wordt nooit opgeslagen en verdwijnt zodra je je eigen export importeert.
+   ============================================================ */
+const DEMO_ANCHORS = {
+  'IE00B4L5Y983':[['2022-09-15',72.5],['2023-11-20',82],['2024-10-10',98.5],['2025-09-05',115],['2026-07-22',124.4]],
+  'IE00BCBJG560':[['2022-09-15',52],['2023-11-20',58],['2024-10-10',72],['2025-09-05',98],['2026-07-22',127.36]],
+  'IE00BKM4GZ66':[['2022-09-15',28.5],['2023-11-20',29.5],['2024-10-10',35],['2025-09-05',42],['2026-07-22',46.09]],
+};
+const DEMO_TX = [
+  {id:"D1",date:"2022-09-15",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:69,price:72.5,value:5002.5,fees:0},
+  {id:"D2",date:"2022-09-15",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:18,price:52,value:936,fees:0},
+  {id:"D3",date:"2022-09-15",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:11,price:28.5,value:313.5,fees:0},
+  {id:"D4",date:"2023-11-20",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:61,price:82,value:5002,fees:0},
+  {id:"D5",date:"2023-11-20",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:16,price:58,value:928,fees:0},
+  {id:"D6",date:"2023-11-20",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:12,price:29.5,value:354,fees:0},
+  {id:"D7",date:"2024-10-10",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:51,price:98.5,value:5023.5,fees:0},
+  {id:"D8",date:"2024-10-10",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:12,price:72,value:864,fees:0},
+  {id:"D9",date:"2024-10-10",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:9,price:35,value:315,fees:0},
+  {id:"D10",date:"2025-09-05",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:48,price:115,value:5520,fees:0},
+  {id:"D11",date:"2025-09-05",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:4,price:98,value:392,fees:0},
+  {id:"D12",date:"2025-09-05",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:7,price:42,value:294,fees:0},
+];
+let DEMO=false;
+function demoHistory(){
+  const out={};
+  for(const isin in DEMO_ANCHORS){
+    const a=DEMO_ANCHORS[isin],pts=[];
+    for(let i=0;i<a.length-1;i++){
+      const t0=new Date(a[i][0]).getTime(),t1=new Date(a[i+1][0]).getTime(),p0=a[i][1],p1=a[i+1][1];
+      const steps=Math.max(1,Math.round((t1-t0)/(30*86400000)));
+      for(let m=0;m<steps;m++){
+        const f=m/steps;
+        pts.push([new Date(t0+(t1-t0)*f).toISOString().slice(0,10),Math.round((p0+(p1-p0)*f)*100)/100]);
+      }
+    }
+    pts.push(a[a.length-1]);
+    out[isin]=pts;
+  }
+  return out;
+}
+function enterDemo(){
+  DEMO=true;
+  TX=DEMO_TX.map(t=>({...t}));
+  HISTORY=demoHistory();
+  PRICES={};
+  for(const isin in DEMO_ANCHORS){const a=DEMO_ANCHORS[isin];PRICES[isin]={price:a[a.length-1][1],date:todayISO(),source:'demo'};}
+  TARGETS={'IE00B4L5Y983':80,'IE00BCBJG560':15,'IE00BKM4GZ66':5};
+}
+function exitDemo(){DEMO=false;TX=[];PRICES={};HISTORY=null;TARGETS=null;}
+
+
+/* ============================================================
    STATE + OPSLAG
    ============================================================ */
 const LS_TX = 'pf_tx_v1';
@@ -217,12 +295,15 @@ let TARGETS = load(LS_TARGETS, null);
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
-function persist(){save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);cloudPush();}
+function persist(){if(DEMO)return;save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);cloudPush();}
 
 const $=id=>document.getElementById(id);
 const eur=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR'}).format(n||0);
 const eur0=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
-const pct=n=>(n>=0?'+':'')+n.toFixed(1)+'%';
+const nf1=new Intl.NumberFormat('nl-BE',{minimumFractionDigits:1,maximumFractionDigits:1});
+const pct=n=>(n>=0?'+':'')+nf1.format(n)+'%';
+const pctPlain=n=>nf1.format(n)+'%';
+const fmtDate=d=>new Date(d+'T00:00:00').toLocaleDateString('nl-BE',{day:'numeric',month:'short',year:'numeric'});
 const todayISO=()=>new Date().toISOString().slice(0,10);
 function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
 
@@ -335,7 +416,12 @@ function render(){
     </div>
   </div>`;
 
-  html+=renderChart(e);
+  if(DEMO)html=`<div class="demo-banner">
+    <div class="txt"><b>Demovoorbeeld</b> — fictieve cijfers om de app te tonen (€25.000 over vier momenten, herbalancerend). Importeer je eigen Saxo-export voor je echte portefeuille.</div>
+    <label class="btn primary" for="importFile">Mijn export importeren</label>
+  </div>`+html;
+
+  html+=renderChart();
 
   // Posities
   html+=`<div class="sec"><h2>Posities</h2><span class="eyebrow">${e.pos.length} fondsen</span></div>`;
@@ -353,7 +439,7 @@ function render(){
         <div><div class="k">Aantal</div><div class="v">${p.qty}</div></div>
         <div><div class="k">Gem. koers</div><div class="v">${eur(p.avg)}</div></div>
         <div><div class="k">Koers nu</div><div class="v">${p.price!=null?eur(p.price):'—'}</div></div>
-        <div><div class="k">Gewicht</div><div class="v">${p.weight.toFixed(1)}%</div></div>
+        <div><div class="k">Gewicht</div><div class="v">${pctPlain(p.weight)}</div></div>
       </div>
       <div class="bar"><i style="width:${Math.min(100,p.weight)}%"></i></div>
     </div>`;
@@ -367,7 +453,7 @@ function render(){
     html+=`<div class="alloc-row">
       <span class="nm">${p.symbol}</span>
       <span class="track"><i style="width:${Math.min(100,p.weight)}%"></i><span class="tgt" style="left:${Math.min(100,tgt)}%"></span></span>
-      <span class="pct"><b>${p.weight.toFixed(1)}%</b> / ${tgt}%</span>
+      <span class="pct"><b>${pctPlain(p.weight)}</b> / ${tgt}%</span>
     </div>`;
   }
   html+=`<div class="rb-input">
@@ -379,7 +465,7 @@ function render(){
   </div>`;
 
   app.innerHTML=html;
-  drawChartAxis(e);
+  drawChart();
   wireRebalance(e);
   updateControlHint();
 }
@@ -388,95 +474,129 @@ function render(){
    Met history.json: portefeuillewaarde per dag vs. cumulatief ingelegd.
    Zonder history.json: ingelegd-in-stappen + huidige-waarde-punt (eerlijke fallback). */
 let HISTORY=null; // {isin:[[date,price],...]}
-function renderChart(e){
+function renderChart(){
   return `<div class="chartcard">
     <h3>Waardeverloop</h3>
-    <div class="leg">
-      <span><i style="background:var(--brass)"></i>waarde</span>
-      <span><i style="background:var(--muted)"></i>ingelegd</span>
-      <span id="chartNote" class="muted"></span>
-    </div>
-    <div id="chartHolder"></div>
+    <div class="readout" id="chartReadout"></div>
+    <div class="chartwrap" id="chartWrap"></div>
   </div>`;
 }
-function buildSeries(e){
-  // cumulatief ingelegd op elke transactiedatum
-  const dates=[...new Set(TX.map(t=>t.date))].sort();
-  const invByDate=[];let cum=0;
-  const perDay={};for(const t of TX){perDay[t.date]=(perDay[t.date]||0)+(((t.side||'').toLowerCase()==='sell'?-1:1)*t.value);}
-  for(const d of dates){cum+=perDay[d];invByDate.push([d,cum]);}
 
-  let value=null;
+/* Bouwt één tijdlijn met per (beurs)dag: cumulatief ingelegd + portefeuillewaarde.
+   Met history.json = dagelijkse waardelijn; zonder = eerlijke 2-puntslijn. */
+function buildChartSeries(){
+  const txDates=[...new Set(TX.map(t=>t.date))].sort();
+  if(!txDates.length) return null;
+  const start=txDates[0];
+  const txSorted=[...TX].sort((a,b)=>a.date.localeCompare(b.date));
+  const sign=t=>((t.side||'').toLowerCase()==='sell'?-1:1);
+  const investedAt=d=>{let c=0;for(const t of txSorted)if(t.date<=d)c+=sign(t)*t.value;return c;};
+  const heldAt=d=>{const q={};for(const t of txSorted)if(t.date<=d)q[t.isin]=(q[t.isin]||0)+sign(t)*t.qty;return q;};
+
+  let timeline;
   if(HISTORY){
-    // verzamel alle beursdagen uit history
-    const allDates=new Set();
-    for(const isin in HISTORY)for(const [d] of HISTORY[isin])allDates.add(d);
-    const sorted=[...allDates].sort().filter(d=>d>=dates[0]);
-    const lastPrice={};value=[];
-    for(const d of sorted){
-      for(const isin in HISTORY){
-        const hit=HISTORY[isin].find(x=>x[0]===d);if(hit)lastPrice[isin]=hit[1];
-      }
-      // aantallen aangehouden op datum d
-      let v=0;
-      const heldQty={};
-      for(const t of TX){if(t.date<=d){const s=(t.side||'').toLowerCase()==='sell'?-1:1;heldQty[t.isin]=(heldQty[t.isin]||0)+s*t.qty;}}
-      let ok=true;
-      for(const isin in heldQty){if(heldQty[isin]<=0)continue;if(lastPrice[isin]==null){ok=false;break;}v+=heldQty[isin]*lastPrice[isin];}
-      if(ok&&v>0)value.push([d,v]);
+    const ds=new Set();
+    for(const isin in HISTORY)for(const [d] of HISTORY[isin])if(d>=start)ds.add(d);
+    ds.add(todayISO());
+    timeline=[...ds].sort();
+  }else{
+    timeline=[start,todayISO()];
+  }
+
+  const idx={},lastPrice={};
+  if(HISTORY)for(const isin in HISTORY)idx[isin]=0;
+  const points=[];
+  for(const d of timeline){
+    if(HISTORY)for(const isin in HISTORY){
+      const arr=HISTORY[isin];
+      while(idx[isin]<arr.length && arr[idx[isin]][0]<=d){lastPrice[isin]=arr[idx[isin]][1];idx[isin]++;}
     }
-  }else if(e.totVal!=null){
-    value=[[dates[0],invByDate[0][1]],[todayISO(),e.totVal]];
+    const inv=investedAt(d);
+    let val=null;
+    if(HISTORY){
+      const q=heldAt(d);let v=0,ok=true;
+      for(const isin in q){if(q[isin]<=1e-9)continue;const px=lastPrice[isin]!=null?lastPrice[isin]:(PRICES[isin]&&PRICES[isin].price);if(px==null){ok=false;break;}v+=q[isin]*px;}
+      if(ok)val=v;
+    }
+    points.push({date:d,invested:inv,value:val});
   }
-  return {invByDate,value,dates};
+  const e=enrich();
+  if(e.totVal!=null)points[points.length-1].value=e.totVal;   // laatste punt = live koersen
+  if(!HISTORY)points[0].value=points[0].invested;
+  return {points,hasValue:points.some(p=>p.value!=null)};
 }
-function drawChartAxis(e){
-  const holder=$('chartHolder');if(!holder)return;
-  const s=buildSeries(e);
-  const note=$('chartNote');
-  if(!HISTORY&&e.totVal!=null&&note)note.textContent='· lijn wordt fijnmaziger zodra history.json meekomt';
-  if(!HISTORY&&e.totVal==null&&note)note.textContent='· voeg koersen toe voor de waardelijn';
 
-  const W=680,H=220,P=34,PB=22;
-  const all=[...s.invByDate.map(d=>d[1])];
-  if(s.value)s.value.forEach(d=>all.push(d[1]));
-  const ymax=Math.max(...all)*1.08,ymin=0;
-  const t0=new Date(s.dates[0]).getTime();
-  const t1=Math.max(new Date(todayISO()).getTime(),new Date(s.dates[s.dates.length-1]).getTime());
-  const X=t=>P+((new Date(t).getTime()-t0)/(t1-t0||1))*(W-P-8);
-  const Y=v=>H-PB-((v-ymin)/(ymax-ymin||1))*(H-PB-8);
+function niceNum(x){const mag=Math.pow(10,Math.floor(Math.log10(x)));const n=x/mag;const s=n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10;return s*mag;}
+function chartScale(maxv){const target=(maxv||1)*1.08;const step=niceNum(target/3);const top=Math.ceil(target/step)*step;const lines=[];for(let v=0;v<=top+1;v+=step)lines.push(v);return {top,lines};}
+function kEur(v){return v>=1000?'€'+Math.round(v/1000)+'k':'€'+Math.round(v);}
 
-  function path(arr,step){
-    if(!arr||!arr.length)return'';
-    let d='';arr.forEach((pt,i)=>{
-      const x=X(pt[0]),y=Y(pt[1]);
-      if(i===0)d+=`M${x.toFixed(1)},${y.toFixed(1)}`;
-      else if(step)d+=`L${x.toFixed(1)},${Y(arr[i-1][1]).toFixed(1)}L${x.toFixed(1)},${y.toFixed(1)}`;
-      else d+=`L${x.toFixed(1)},${y.toFixed(1)}`;
-    });return d;
-  }
-  const invPath=path(s.invByDate,true);
-  const valPath=s.value?path(s.value,!HISTORY?false:false):'';
-  // vlak onder de waardelijn
-  let area='';
-  if(s.value&&s.value.length){
-    area=valPath+`L${X(s.value[s.value.length-1][0]).toFixed(1)},${Y(0).toFixed(1)}L${X(s.value[0][0]).toFixed(1)},${Y(0).toFixed(1)}Z`;
-  }
-  // y-labels
-  const yl=[0,ymax/2,ymax].map(v=>`<text x="${P-6}" y="${(Y(v)+3).toFixed(1)}" text-anchor="end" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${eur0(v)}</text>`).join('');
-  // x-labels (eerste + laatste)
-  const xf=new Date(s.dates[0]).toLocaleDateString('nl-BE',{month:'short',year:'2-digit'});
-  const xl=new Date(todayISO()).toLocaleDateString('nl-BE',{month:'short',year:'2-digit'});
+function drawChart(){
+  const wrap=$('chartWrap'),readout=$('chartReadout');
+  if(!wrap)return;
+  const s=buildChartSeries();
+  if(!s){wrap.innerHTML='';return;}
+  const pts=s.points;
 
-  holder.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="waardeverloop">
-    <line x1="${P}" y1="${Y(0)}" x2="${W-4}" y2="${Y(0)}" stroke="#2b3140"/>
-    ${area?`<path d="${area}" fill="rgba(198,161,91,.10)" stroke="none"/>`:''}
-    <path d="${invPath}" fill="none" stroke="#8b93a3" stroke-width="1.5" stroke-dasharray="4 3"/>
-    ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.2"/>`:''}
-    ${yl}
-    <text x="${P}" y="${H-6}" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${xf}</text>
-    <text x="${W-4}" y="${H-6}" text-anchor="end" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">${xl}</text>
+  const W=700,H=280,PL=46,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  const t0=new Date(pts[0].date+'T00:00:00').getTime();
+  const t1=new Date(pts[pts.length-1].date+'T00:00:00').getTime();
+  const invVals=pts.map(p=>p.invested);
+  const valVals=pts.filter(p=>p.value!=null).map(p=>p.value);
+  const sc=chartScale(Math.max(...invVals,...(valVals.length?valVals:[0])));
+  const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
+  const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
+  pts.forEach(p=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._iy=Y(p.invested);p._vy=p.value!=null?Y(p.value):null;});
+
+  const vpts=pts.filter(p=>p.value!=null);
+  let valPath='',valArea='';
+  vpts.forEach((p,i)=>{valPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._vy.toFixed(1);});
+  if(vpts.length)valArea=valPath+`L${vpts[vpts.length-1]._x.toFixed(1)},${Y(0).toFixed(1)}L${vpts[0]._x.toFixed(1)},${Y(0).toFixed(1)}Z`;
+  let invPath='';pts.forEach((p,i)=>{invPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._iy.toFixed(1);});
+
+  let grid='',ylab='';
+  sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
+    grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36" stroke-width="1"/>`;
+    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+  const xd=[pts[0],pts[Math.floor(pts.length/2)],pts[pts.length-1]];
+  let xlab='';xd.forEach((p,i)=>{const a=i===0?'start':(i===2?'end':'middle');
+    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${new Date(p.date+'T00:00:00').toLocaleDateString('nl-BE',{month:'short',year:'2-digit'})}</text>`;});
+
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="waardeverloop">
+    <defs><linearGradient id="valgrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#c6a15b" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/></linearGradient></defs>
+    ${grid}
+    ${valArea?`<path d="${valArea}" fill="url(#valgrad)"/>`:''}
+    <path d="${invPath}" fill="none" stroke="#7f8896" stroke-width="1.5" stroke-dasharray="5 4" stroke-linejoin="round"/>
+    ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`:''}
+    ${ylab}${xlab}
+    <g id="cross" style="display:none">
+      <line id="crossLine" y1="${PT}" y2="${PT+plotH}" stroke="#ece6da" stroke-opacity="0.4" stroke-width="1"/>
+      <circle id="crossInv" r="4.5" fill="#181c25" stroke="#7f8896" stroke-width="2"/>
+      <circle id="crossVal" r="5" fill="#181c25" stroke="#c6a15b" stroke-width="2.5"/>
+    </g>
   </svg>`;
+
+  const setReadout=p=>{readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span>
+    <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span></span>
+    <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.invested)}</span></span>`;};
+  setReadout(pts[pts.length-1]);
+
+  // ---- interactief scrubben (touch + muis) ----
+  const svg=wrap.querySelector('svg');
+  const cross=svg.querySelector('#cross'),cl=svg.querySelector('#crossLine'),
+        ci=svg.querySelector('#crossInv'),cv=svg.querySelector('#crossVal');
+  const nearest=clientX=>{const r=svg.getBoundingClientRect();const xv=((clientX-r.left)/r.width)*W;
+    let best=pts[0],bd=Infinity;for(const p of pts){const d=Math.abs(p._x-xv);if(d<bd){bd=d;best=p;}}return best;};
+  const move=clientX=>{const p=nearest(clientX);cross.style.display='';
+    cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);
+    ci.setAttribute('cx',p._x);ci.setAttribute('cy',p._iy);
+    if(p._vy!=null){cv.style.display='';cv.setAttribute('cx',p._x);cv.setAttribute('cy',p._vy);}else cv.style.display='none';
+    setReadout(p);};
+  const end=()=>{cross.style.display='none';setReadout(pts[pts.length-1]);};
+  svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
+  svg.addEventListener('pointermove',ev=>move(ev.clientX));
+  ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
 }
 
 /* ---- Herbalanceren ---- */
@@ -493,7 +613,7 @@ function wireRebalance(e){
       const buy=targetVal-cur;
       const px=p.price||p.avg;
       const shares=px?buy/px:0;
-      rows+=`<div class="row"><span>${p.symbol}</span><span>${buy>=0?'koop':'verkoop'} ${eur(Math.abs(buy))} ${px?`· ${Math.abs(shares).toFixed(1)} st.`:''}</span></div>`;
+      rows+=`<div class="row"><span>${p.symbol}</span><span>${buy>=0?'koop':'verkoop'} ${eur(Math.abs(buy))} ${px?`· ${nf1.format(Math.abs(shares))} st.`:''}</span></div>`;
     }
     out.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:4px">Om naar je doelen te bewegen${add?` na inleg van ${eur(add)}`:''}:</div>${rows}`;
   }
@@ -501,19 +621,27 @@ function wireRebalance(e){
   $('rbTargets').onclick=openTargets;
 }
 function openTargets(){
-  const e=enrich();
-  const cur=e.pos.map(p=>`${p.symbol}=${TARGETS[p.isin]||0}`).join('  ');
-  const input=prompt('Doelgewichten in %, formaat "IWDA=80 ZPRS=15 EMIM=5":',cur);
-  if(!input)return;
-  const map={};input.split(/\s+/).forEach(tok=>{const [k,v]=tok.split('=');if(k&&v)map[k.trim().toUpperCase()]=Number(v);});
-  for(const p of e.pos){const sym=p.symbol.toUpperCase();if(map[sym]!=null)TARGETS[p.isin]=map[sym];}
-  const sum=e.pos.reduce((s,p)=>s+(TARGETS[p.isin]||0),0);
-  if(Math.round(sum)!==100)alert('Let op: je doelen tellen op tot '+sum+'% in plaats van 100%. Ze zijn bewaard, maar de herbalanceer-bedragen kloppen pas als het samen 100% is.');
-  persist();render();
+  const pos=positions();
+  let html='';
+  for(const p of pos){
+    html+=`<div class="pe-row"><span class="nm">${p.symbol}</span>
+      <input type="number" step="1" min="0" inputmode="numeric" data-isin="${p.isin}" value="${TARGETS[p.isin]||0}"><span class="muted">%</span></div>`;
+  }
+  $('targetBody').innerHTML=html;
+  const inputs=()=>document.querySelectorAll('#targetBody input[data-isin]');
+  const upd=()=>{let s=0;inputs().forEach(i=>s+=Number(i.value)||0);const ok=Math.round(s)===100;
+    $('targetSum').textContent='Samen: '+s+'%'+(ok?'  ✓':'  — streef naar 100%');
+    $('targetSum').style.color=ok?'var(--up)':'var(--muted)';};
+  inputs().forEach(i=>i.oninput=upd);upd();
+  $('saveTargets').onclick=()=>{inputs().forEach(i=>{const v=Number(i.value);if(!isNaN(v))TARGETS[i.dataset.isin]=v;});
+    persist();$('targetModal').classList.remove('on');render();};
+  $('closeTargets').onclick=()=>$('targetModal').classList.remove('on');
+  $('targetModal').classList.add('on');
 }
 
 function updateControlHint(){
   const h=$('controlHint');
+  if(DEMO){h.textContent='Je kijkt naar een demovoorbeeld — importeer je export voor je eigen cijfers.';return;}
   if(TX.length===0){h.textContent='';return;}
   const n=Object.keys(PRICES).length;
   const stale=Object.values(PRICES).some(p=>p.date&&daysBetween(p.date,todayISO())>4);
@@ -556,10 +684,12 @@ function showImportPreview(total,rows){
   $('importModal').classList.add('on');
 }
 $('confirmImport').onclick=()=>{
+  if(DEMO)exitDemo();            // demo wissen vóór echte data wordt toegevoegd
   TX=TX.concat(pendingImport);
   // dedupe op id voor de zekerheid
   const seen=new Set();TX=TX.filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));
   pendingImport=[];persist();$('importModal').classList.remove('on');render();
+  loadFeeds();                   // echte koersen + geschiedenis ophalen
 };
 $('cancelImport').onclick=()=>{pendingImport=[];$('importModal').classList.remove('on');};
 
@@ -608,6 +738,7 @@ $('restoreFile').addEventListener('change',ev=>{
   const rd=new FileReader();
   rd.onload=()=>{try{
     const d=JSON.parse(rd.result);
+    if(DEMO)exitDemo();
     if(d.tx){const seen=new Set();TX=[...TX,...d.tx].filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));}
     if(d.prices)PRICES={...PRICES,...d.prices};
     if(d.targets)TARGETS=d.targets;
@@ -668,6 +799,7 @@ async function initCloud(){
       const snap=await fs.getDoc(ref);
       if(snap.exists()){
         const d=snap.data();
+        if(DEMO)exitDemo();
         if(d.tx){const seen=new Set();TX=[...TX,...d.tx].filter(t=>seen.has(t.id)?false:(seen.add(t.id),true));}
         if(d.prices)PRICES={...d.prices,...PRICES};
         if(d.targets&&!TARGETS)TARGETS=d.targets;
@@ -682,8 +814,13 @@ async function initCloud(){
 /* ============================================================
    START
    ============================================================ */
-render();
-loadFeeds();
+if(TX.length===0){
+  enterDemo();          // nieuw/leeg -> toon een demovoorbeeld (niet opgeslagen)
+  render();
+}else{
+  render();
+  loadFeeds();          // echte data -> koersen + geschiedenis ophalen
+}
 initCloud();
 </script>
 </body>

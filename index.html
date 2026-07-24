@@ -75,8 +75,16 @@ header .sync b{color:var(--paper);font-weight:500}
 .readout .ro-pct{font-size:12px;padding:1px 7px;border-radius:20px;margin-left:2px}
 .readout .ro-pct.up{color:var(--up);background:rgba(90,168,122,.14)}
 .readout .ro-pct.down{color:var(--down);background:rgba(207,107,91,.14)}
+.readout .ro-gain{font-size:12px;margin-left:7px}
+.readout .ro-gain.up{color:var(--up)}
+.readout .ro-gain.down{color:var(--down)}
 .chartwrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 svg{display:block;width:100%;height:auto}
+.proj-note{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:400;letter-spacing:.02em}
+.proj-controls{display:flex;flex-wrap:wrap;gap:9px 14px;margin:8px 2px 12px}
+.proj-controls label{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
+.proj-controls input{width:62px;background:var(--ink);border:1px solid var(--line);color:var(--paper);font-family:var(--mono);font-size:13px;padding:6px 8px;border-radius:8px}
+.proj-controls input:focus{outline:2px solid var(--brass);outline-offset:1px}
 
 /* section heads */
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 4px 12px}
@@ -262,38 +270,48 @@ const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", appId
    Wordt nooit opgeslagen en verdwijnt zodra je je eigen export importeert.
    ============================================================ */
 const DEMO_ANCHORS = {
-  'IE00B4L5Y983':[['2022-09-15',72.5],['2023-11-20',82],['2024-10-10',98.5],['2025-09-05',115],['2026-07-22',124.4]],
-  'IE00BCBJG560':[['2022-09-15',52],['2023-11-20',58],['2024-10-10',72],['2025-09-05',98],['2026-07-22',127.36]],
-  'IE00BKM4GZ66':[['2022-09-15',28.5],['2023-11-20',29.5],['2024-10-10',35],['2025-09-05',42],['2026-07-22',46.09]],
+  'IE00B4L5Y983':[['2022-09-15',71],['2023-03-15',75],['2023-11-20',82],['2024-04-15',92],['2024-10-10',98],['2025-04-10',93],['2025-09-05',112],['2026-02-15',113],['2026-07-22',125]],
+  'IE00BCBJG560':[['2022-09-15',52],['2023-03-15',54],['2023-11-20',58],['2024-04-15',66],['2024-10-10',72],['2025-04-10',88],['2025-09-05',98],['2026-02-15',112],['2026-07-22',127]],
+  'IE00BKM4GZ66':[['2022-09-15',29],['2023-03-15',28],['2023-11-20',30],['2024-04-15',33],['2024-10-10',35],['2025-04-10',31],['2025-09-05',38],['2026-02-15',40],['2026-07-22',47]],
 };
 const DEMO_TX = [
-  {id:"D1",date:"2022-09-15",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:69,price:72.5,value:5002.5,fees:0},
+  {id:"D1",date:"2022-09-15",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:70,price:71,value:4970,fees:0},
   {id:"D2",date:"2022-09-15",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:18,price:52,value:936,fees:0},
-  {id:"D3",date:"2022-09-15",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:11,price:28.5,value:313.5,fees:0},
-  {id:"D4",date:"2023-11-20",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:61,price:82,value:5002,fees:0},
-  {id:"D5",date:"2023-11-20",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:16,price:58,value:928,fees:0},
-  {id:"D6",date:"2023-11-20",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:12,price:29.5,value:354,fees:0},
-  {id:"D7",date:"2024-10-10",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:51,price:98.5,value:5023.5,fees:0},
-  {id:"D8",date:"2024-10-10",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:12,price:72,value:864,fees:0},
-  {id:"D9",date:"2024-10-10",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:9,price:35,value:315,fees:0},
-  {id:"D10",date:"2025-09-05",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:48,price:115,value:5520,fees:0},
+  {id:"D3",date:"2022-09-15",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:11,price:29,value:319,fees:0},
+  {id:"D4",date:"2023-11-20",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:60,price:82,value:4920,fees:0},
+  {id:"D5",date:"2023-11-20",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:17,price:58,value:986,fees:0},
+  {id:"D6",date:"2023-11-20",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:11,price:30,value:330,fees:0},
+  {id:"D7",date:"2024-10-10",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:52,price:98,value:5096,fees:0},
+  {id:"D8",date:"2024-10-10",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:11,price:72,value:792,fees:0},
+  {id:"D9",date:"2024-10-10",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:10,price:35,value:350,fees:0},
+  {id:"D10",date:"2025-09-05",isin:"IE00B4L5Y983",symbol:"IWDA",name:"iShares Core MSCI World",side:"Buy",qty:49,price:112,value:5488,fees:0},
   {id:"D11",date:"2025-09-05",isin:"IE00BCBJG560",symbol:"ZPRS",name:"SPDR MSCI World Small Cap",side:"Buy",qty:4,price:98,value:392,fees:0},
-  {id:"D12",date:"2025-09-05",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:7,price:42,value:294,fees:0},
+  {id:"D12",date:"2025-09-05",isin:"IE00BKM4GZ66",symbol:"EMIM",name:"iShares Core MSCI EM IMI",side:"Buy",qty:11,price:38,value:418,fees:0},
 ];
 let DEMO=false;
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;};}
+function seedFor(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function demoHistory(){
+  // Realistisch koersverloop: geometrische interpolatie tussen echte niveaus,
+  // met een gezaaide (deterministische) mean-reverting weekwandeling die aan elk
+  // anker exact wordt vastgepind (damping via sin). Zo volgt de lijn de echte
+  // marktbeweging met geloofwaardige schommelingen en dips.
   const out={};
   for(const isin in DEMO_ANCHORS){
-    const a=DEMO_ANCHORS[isin],pts=[];
+    const a=DEMO_ANCHORS[isin], rand=mulberry32(seedFor(isin)), pts=[];
+    let walk=0;
     for(let i=0;i<a.length-1;i++){
       const t0=new Date(a[i][0]).getTime(),t1=new Date(a[i+1][0]).getTime(),p0=a[i][1],p1=a[i+1][1];
-      const steps=Math.max(1,Math.round((t1-t0)/(30*86400000)));
-      for(let m=0;m<steps;m++){
-        const f=m/steps;
-        pts.push([new Date(t0+(t1-t0)*f).toISOString().slice(0,10),Math.round((p0+(p1-p0)*f)*100)/100]);
+      const weeks=Math.max(1,Math.round((t1-t0)/(7*86400000)));
+      for(let w=0;w<weeks;w++){
+        const f=w/weeks;
+        const base=p0*Math.pow(p1/p0,f);
+        walk=walk*0.82+(rand()-0.5)*0.045;
+        const price=base*(1+walk*Math.sin(f*Math.PI));
+        pts.push([new Date(t0+(t1-t0)*f).toISOString().slice(0,10),Math.round(price*100)/100]);
       }
     }
-    pts.push(a[a.length-1]);
+    pts.push([a[a.length-1][0],a[a.length-1][1]]);
     out[isin]=pts;
   }
   return out;
@@ -319,9 +337,11 @@ const LS_TARGETS = 'pf_targets_v1';
 let TX = load(LS_TX, []);            // transacties
 let PRICES = load(LS_PRICES, {});    // {isin:{price,date,source}}
 let TARGETS = load(LS_TARGETS, null);
+let PROJ = load('pf_proj_v1', {ret:8, low:5, high:11, monthly:0});  // projectie-instellingen
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+function savePROJ(){save('pf_proj_v1',PROJ);}
 function persist(){if(DEMO)return;save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);cloudPush();}
 
 const $=id=>document.getElementById(id);
@@ -492,8 +512,9 @@ function render(){
     <div class="rb-out" id="rbOut"></div>
   </div>`;
 
-  app.innerHTML=html;
+  app.innerHTML=html+renderProjection();
   drawChart();
+  drawProjection();
   wireRebalance(e);
   updateControlHint();
 }
@@ -610,7 +631,7 @@ function drawChart(){
     const gpct=(gain!=null&&p.invested>0)?(gain/p.invested)*100:null;
     const cls=gain==null?'':(gain>=0?'up':'down');
     readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span>
-    <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span>${gpct!=null?`<span class="ro-pct ${cls}">${pct(gpct)}</span>`:''}</span>
+    <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span>${gpct!=null?`<span class="ro-pct ${cls}">${pct(gpct)}</span><span class="ro-gain ${cls}">${gain>=0?'+':'−'}${eur(Math.abs(gain))}</span>`:''}</span>
     <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.invested)}</span></span>`;};
   setReadout(pts[pts.length-1]);
 
@@ -629,6 +650,124 @@ function drawChart(){
   svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
   svg.addEventListener('pointermove',ev=>move(ev.clientX));
   ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
+}
+
+/* ============================================================
+   PROJECTIE tot 2055 (schatting op basis van een verondersteld
+   jaarrendement + optionele maandinleg; met pessimistisch/optimistisch
+   band). Nadrukkelijk een projectie, geen voorspelling.
+   ============================================================ */
+function renderProjection(){
+  if(TX.length===0)return '';
+  return `<div class="chartcard">
+    <h3>Projectie tot 2055 <span class="proj-note">· schatting, geen voorspelling</span></h3>
+    <div class="proj-controls">
+      <label>Rendement <input id="projRet" type="number" step="0.5" inputmode="decimal" value="${PROJ.ret}">%</label>
+      <label>Pessimistisch <input id="projLow" type="number" step="0.5" inputmode="decimal" value="${PROJ.low}">%</label>
+      <label>Optimistisch <input id="projHigh" type="number" step="0.5" inputmode="decimal" value="${PROJ.high}">%</label>
+      <label>Maandinleg <input id="projMon" type="number" step="50" min="0" inputmode="decimal" value="${PROJ.monthly}">€</label>
+    </div>
+    <div class="readout" id="projReadout"></div>
+    <div class="chartwrap" id="projWrap"></div>
+  </div>`;
+}
+function projectSeries(){
+  const e=enrich();
+  const V0=e.totVal!=null?e.totVal:e.totInv;
+  const today=new Date();today.setHours(0,0,0,0);
+  // maandgroei = jaarrendement^(1/12), zodat 12 maanden exact het jaarrendement geven
+  const mrE=Math.pow(1+PROJ.ret/100,1/12),mrL=Math.pow(1+PROJ.low/100,1/12),mrH=Math.pow(1+PROJ.high/100,1/12),m=PROJ.monthly||0;
+  let vE=V0,vL=V0,vH=V0,inv=e.totInv;
+  const pts=[{t:today.getTime(),low:V0,exp:V0,high:V0,invested:inv}];
+  const target=new Date(2055,11,1).getTime();
+  const d=new Date(today);
+  let guard=0;
+  while(d.getTime()<target && guard++<600){
+    d.setMonth(d.getMonth()+1);
+    vE=vE*mrE+m; vL=vL*mrL+m; vH=vH*mrH+m; inv+=m;
+    pts.push({t:d.getTime(),low:vL,exp:vE,high:vH,invested:inv});
+  }
+  return pts;
+}
+function drawProjection(){
+  const wrap=$('projWrap'),readout=$('projReadout');
+  if(!wrap)return;
+  const bind=(id,key)=>{const el=$(id);if(el)el.oninput=()=>{const v=Number(el.value);if(!isNaN(v)){PROJ[key]=v;savePROJ();drawProjection();}};};
+  bind('projRet','ret');bind('projLow','low');bind('projHigh','high');bind('projMon','monthly');
+
+  const hs=buildChartSeries();
+  const proj=projectSeries();
+  const today=new Date();today.setHours(0,0,0,0);const tT=today.getTime();
+  const hist=hs?hs.points.filter(p=>p.value!=null).map(p=>({t:new Date(p.date+'T00:00:00').getTime(),v:p.value,inv:p.invested})):[];
+  const histInv=hs?hs.points.map(p=>({t:new Date(p.date+'T00:00:00').getTime(),inv:p.invested})):[];
+
+  const W=700,H=270,PL=48,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  const t0=hist.length?hist[0].t:tT, t1=proj[proj.length-1].t;
+  const allV=[...hist.map(p=>p.v),...histInv.map(p=>p.inv),...proj.map(p=>p.high),...proj.map(p=>p.invested)];
+  const sc=chartScale(Math.max(...allV,1));
+  const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
+  const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
+
+  const P=arr=>arr.map((p,i)=>(i?'L':'M')+X(p.t).toFixed(1)+','+p.y.toFixed(1)).join('');
+  const histLine=P(hist.map(p=>({t:p.t,y:Y(p.v)})));
+  const invAll=[...histInv.map(p=>({t:p.t,y:Y(p.inv)})),...proj.map(p=>({t:p.t,y:Y(p.invested)}))];
+  const invLine=P(invAll);
+  const expLine=P(proj.map(p=>({t:p.t,y:Y(p.exp)})));
+  // band (low..high)
+  let band='';
+  proj.forEach((p,i)=>{band+=(i?'L':'M')+X(p.t).toFixed(1)+','+Y(p.high).toFixed(1);});
+  for(let i=proj.length-1;i>=0;i--){band+='L'+X(proj[i].t).toFixed(1)+','+Y(proj[i].low).toFixed(1);}
+  band+='Z';
+
+  let grid='',ylab='';
+  sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
+    grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36"/>`;
+    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+  // x-labels: enkele jaartallen
+  const y0=new Date(t0).getFullYear(),yN=2055;const years=[];for(let y=Math.ceil(y0/10)*10;y<=yN;y+=10)years.push(y);
+  if(years[0]>y0+1)years.unshift(y0);
+  let xlab='';years.forEach(y=>{const x=X(new Date(y,0,1).getTime());if(x<PL-2||x>W)return;
+    xlab+=`<text x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${y}</text>`;});
+  const xToday=X(tT).toFixed(1);
+
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="projectie">
+    ${grid}
+    <path d="${band}" fill="rgba(198,161,91,.12)" stroke="none"/>
+    <line x1="${xToday}" y1="${PT}" x2="${xToday}" y2="${PT+plotH}" stroke="#3a4152" stroke-dasharray="3 3"/>
+    <text x="${xToday}" y="${PT-4}" text-anchor="middle" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">nu</text>
+    <path d="${invLine}" fill="none" stroke="#7f8896" stroke-width="1.3" stroke-dasharray="5 4"/>
+    <path d="${expLine}" fill="none" stroke="#c6a15b" stroke-width="1.8" stroke-dasharray="6 4"/>
+    ${histLine?`<path d="${histLine}" fill="none" stroke="#c6a15b" stroke-width="2.4" stroke-linejoin="round"/>`:''}
+    ${ylab}${xlab}
+    <g id="pcross" style="display:none">
+      <line id="pcl" y1="${PT}" y2="${PT+plotH}" stroke="#ece6da" stroke-opacity="0.4"/>
+      <circle id="pce" r="5" fill="#181c25" stroke="#c6a15b" stroke-width="2.5"/>
+    </g>
+  </svg>`;
+
+  // scrub-punten samenvoegen
+  const scrub=[...hist.map(p=>({t:p.t,kind:'h',v:p.v,inv:p.inv})),
+               ...proj.filter(p=>p.t>tT).map(p=>({t:p.t,kind:'p',exp:p.exp,low:p.low,high:p.high,inv:p.invested}))]
+               .sort((a,b)=>a.t-b.t);
+  scrub.forEach(p=>{p._x=X(p.t);p._y=Y(p.kind==='h'?p.v:p.exp);});
+  const setR=p=>{
+    if(p.kind==='h'){readout.innerHTML=`<span class="ro-date">${fmtDate(new Date(p.t).toISOString().slice(0,10))}</span>
+      <span class="ro-item"><i style="background:#c6a15b"></i><span>${eur(p.v)}</span></span>
+      <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.inv)}</span></span>`;}
+    else{readout.innerHTML=`<span class="ro-date">${new Date(p.t).getFullYear()}</span>
+      <span class="ro-item"><i style="background:#c6a15b"></i><span>${eur(p.exp)}</span></span>
+      <span class="ro-item"><span class="lbl">bandbreedte</span><span>${eur0(p.low)}–${eur0(p.high)}</span></span>
+      <span class="ro-item"><span class="lbl">ingelegd</span><span>${eur(p.inv)}</span></span>`;}
+  };
+  const end=pts=>{const last=scrub[scrub.length-1];setR(last);};
+  setR(scrub[scrub.length-1]);   // standaard: 2055
+  const svg=wrap.querySelector('svg'),cr=svg.querySelector('#pcross'),cl=svg.querySelector('#pcl'),ce=svg.querySelector('#pce');
+  const nearest=cx=>{const r=svg.getBoundingClientRect();const xv=((cx-r.left)/r.width)*W;let b=scrub[0],bd=Infinity;for(const p of scrub){const d=Math.abs(p._x-xv);if(d<bd){bd=d;b=p;}}return b;};
+  const move=cx=>{const p=nearest(cx);cr.style.display='';cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);ce.setAttribute('cx',p._x);ce.setAttribute('cy',p._y);setR(p);};
+  const reset=()=>{cr.style.display='none';setR(scrub[scrub.length-1]);};
+  svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
+  svg.addEventListener('pointermove',ev=>move(ev.clientX));
+  ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,reset));
 }
 
 /* ============================================================

@@ -41,8 +41,12 @@ button{font-family:inherit;cursor:pointer}
 a{color:var(--brass)}
 
 /* header */
-header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:14px 0 20px;border-bottom:1px solid var(--line);margin-bottom:22px}
+header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 0 20px;border-bottom:1px solid var(--line);margin-bottom:22px}
 header h1{font-size:24px;letter-spacing:.01em}
+header .hdr-right{display:flex;flex-direction:column;align-items:flex-end;gap:7px}
+header .demo-toggle{background:var(--ink3);border:1px solid var(--line);color:var(--muted);padding:5px 12px;border-radius:20px;font-size:12px;font-family:var(--mono);white-space:nowrap}
+header .demo-toggle:hover{border-color:var(--brass)}
+header .demo-toggle.on{background:rgba(198,161,91,.16);border-color:var(--brass);color:var(--brass)}
 header .sync{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.4}
 header .sync b{color:var(--paper);font-weight:500}
 
@@ -68,6 +72,9 @@ header .sync b{color:var(--paper);font-weight:500}
 .readout .ro-item{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 .readout .ro-item i{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
 .readout .ro-item .lbl{color:var(--muted);font-size:11px}
+.readout .ro-pct{font-size:12px;padding:1px 7px;border-radius:20px;margin-left:2px}
+.readout .ro-pct.up{color:var(--up);background:rgba(90,168,122,.14)}
+.readout .ro-pct.down{color:var(--down);background:rgba(207,107,91,.14)}
 .chartwrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 svg{display:block;width:100%;height:auto}
 
@@ -77,7 +84,9 @@ svg{display:block;width:100%;height:auto}
 .sec .eyebrow{margin-bottom:0}
 
 /* holding cards */
-.hold{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px}
+.hold{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.hold:hover{border-color:var(--brass)}
+.hold .tk .chev{color:var(--brass);opacity:.75;margin-left:6px;font-weight:600}
 .hold .top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
 .hold .nm{font-weight:600;font-size:15px}
 .hold .tk{font-family:var(--mono);font-size:11.5px;color:var(--muted);margin-top:1px}
@@ -89,6 +98,9 @@ svg{display:block;width:100%;height:auto}
 .hold .grid .v{font-family:var(--mono);font-size:14.5px;margin-top:4px}
 .hold .bar{height:3px;background:var(--ink3);border-radius:3px;margin-top:12px;overflow:hidden}
 .hold .bar i{display:block;height:100%;background:var(--brass)}
+.detail-periods{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 8px}
+.period-btn{background:var(--ink3);border:1px solid var(--line);color:var(--muted);padding:6px 13px;border-radius:20px;font-size:12.5px;font-family:var(--mono)}
+.period-btn.on{background:rgba(198,161,91,.16);border-color:var(--brass);color:var(--brass)}
 
 /* allocation + rebalance */
 .panel{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
@@ -148,7 +160,10 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
 
 <header>
   <h1>Portefeuille</h1>
-  <div class="sync" id="syncStatus">lokaal opgeslagen</div>
+  <div class="hdr-right">
+    <button class="demo-toggle" id="demoToggle">Demo</button>
+    <div class="sync" id="syncStatus">lokaal opgeslagen</div>
+  </div>
 </header>
 
 <div id="app"></div>
@@ -205,6 +220,18 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
       <button class="btn primary" id="saveTargets">Bewaren</button>
       <button class="btn ghost" id="closeTargets">Sluiten</button>
     </div>
+  </div>
+</div>
+
+<!-- Fonds-detail (koersgrafiek + periodes) -->
+<div class="modal-bg" id="detailModal">
+  <div class="modal">
+    <h2 id="detailName">Fonds</h2>
+    <div class="muted mono" id="detailSub" style="font-size:12px;margin-top:2px"></div>
+    <div class="detail-periods" id="detailPeriods"></div>
+    <div class="readout" id="detailReadout"></div>
+    <div class="chartwrap" id="detailWrap"></div>
+    <div class="controls" style="margin-top:8px"><button class="btn ghost" id="closeDetail">Sluiten</button></div>
   </div>
 </div>
 
@@ -392,6 +419,7 @@ function defaultTargets(pos,totInv){
    ============================================================ */
 function render(){
   const app=$('app');
+  updateDemoToggle();
   if(TX.length===0){
     app.innerHTML=`<div class="empty">
       <h2>Nog geen transacties</h2>
@@ -427,9 +455,9 @@ function render(){
   html+=`<div class="sec"><h2>Posities</h2><span class="eyebrow">${e.pos.length} fondsen</span></div>`;
   for(const p of e.pos){
     const plc=p.pl==null?'':(p.pl>=0?'up':'down');
-    html+=`<div class="hold">
+    html+=`<div class="hold" onclick="openDetail('${p.isin}')">
       <div class="top">
-        <div><div class="nm">${p.name}</div><div class="tk">${p.symbol} · ${p.isin}</div></div>
+        <div><div class="nm">${p.name}</div><div class="tk">${p.symbol} · ${p.isin}<span class="chev">›</span></div></div>
         <div>
           <div class="mv">${p.value!=null?eur(p.value):'—'}</div>
           <div class="pl ${plc}">${p.pl!=null?`${p.pl>=0?'+':''}${eur(p.pl)} · ${pct(p.plPct)}`:'koers onbekend'}</div>
@@ -577,8 +605,12 @@ function drawChart(){
     </g>
   </svg>`;
 
-  const setReadout=p=>{readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span>
-    <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span></span>
+  const setReadout=p=>{
+    const gain=p.value!=null?p.value-p.invested:null;
+    const gpct=(gain!=null&&p.invested>0)?(gain/p.invested)*100:null;
+    const cls=gain==null?'':(gain>=0?'up':'down');
+    readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span>
+    <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span>${gpct!=null?`<span class="ro-pct ${cls}">${pct(gpct)}</span>`:''}</span>
     <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.invested)}</span></span>`;};
   setReadout(pts[pts.length-1]);
 
@@ -594,6 +626,84 @@ function drawChart(){
     if(p._vy!=null){cv.style.display='';cv.setAttribute('cx',p._x);cv.setAttribute('cy',p._vy);}else cv.style.display='none';
     setReadout(p);};
   const end=()=>{cross.style.display='none';setReadout(pts[pts.length-1]);};
+  svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
+  svg.addEventListener('pointermove',ev=>move(ev.clientX));
+  ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
+}
+
+/* ============================================================
+   FONDS-DETAIL: koersgrafiek per ETF met periodekeuze
+   ============================================================ */
+let DETAIL_ISIN=null, DETAIL_PERIOD='1J';
+const PERIODS=[['DAYS','Dagen'],['1M','1M'],['6M','6M'],['1J','1J'],['5J','5J']];
+function openDetail(isin){
+  DETAIL_ISIN=isin; DETAIL_PERIOD='1J';
+  const m=META[isin]||{}, price=PRICES[isin]&&PRICES[isin].price;
+  $('detailName').textContent=m.name||isin;
+  $('detailSub').innerHTML=`${m.symbol||''} · ${isin}${price?` · nu ${eur(price)}`:''}`;
+  $('detailPeriods').innerHTML=PERIODS.map(([k,l])=>`<button class="period-btn${k===DETAIL_PERIOD?' on':''}" data-p="${k}">${l}</button>`).join('');
+  $('detailPeriods').querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    DETAIL_PERIOD=b.dataset.p;
+    $('detailPeriods').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));
+    drawFundChart();});
+  $('detailModal').classList.add('on');
+  drawFundChart();
+}
+$('closeDetail').onclick=()=>$('detailModal').classList.remove('on');
+
+function fundSeries(){
+  const isin=DETAIL_ISIN;
+  const arr=(HISTORY&&HISTORY[isin])?HISTORY[isin].map(a=>({date:a[0],price:a[1]})):[];
+  if(!arr.length)return [];
+  if(DETAIL_PERIOD==='DAYS')return arr.slice(-10);
+  const days={'1M':31,'6M':183,'1J':366,'5J':1000000}[DETAIL_PERIOD]||366;
+  const cutoff=Date.now()-days*86400000;
+  const f=arr.filter(x=>new Date(x.date+'T00:00:00').getTime()>=cutoff);
+  return f.length>=2?f:arr.slice(-Math.min(10,arr.length));
+}
+function fmtShort(d){
+  const dt=new Date(d+'T00:00:00');
+  return (DETAIL_PERIOD==='DAYS'||DETAIL_PERIOD==='1M')
+    ? dt.toLocaleDateString('nl-BE',{day:'numeric',month:'short'})
+    : dt.toLocaleDateString('nl-BE',{month:'short',year:'2-digit'});
+}
+function drawFundChart(){
+  const wrap=$('detailWrap'),readout=$('detailReadout');
+  const pts=fundSeries();
+  if(pts.length<2){wrap.innerHTML='<div class="muted" style="padding:22px 4px;font-size:13px">Nog te weinig koershistorie voor deze periode.</div>';readout.innerHTML='';return;}
+  const W=700,H=250,PL=46,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  const t0=new Date(pts[0].date+'T00:00:00').getTime(),t1=new Date(pts[pts.length-1].date+'T00:00:00').getTime();
+  const prices=pts.map(p=>p.price);
+  let lo=Math.min(...prices),hi=Math.max(...prices);
+  const pad=(hi-lo)*0.12||hi*0.02; lo-=pad; hi+=pad;
+  const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
+  const Y=v=>PT+plotH-((v-lo)/((hi-lo)||1))*plotH;
+  pts.forEach(p=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._y=Y(p.price);});
+  const first=pts[0].price,last=pts[pts.length-1].price;
+  const col=last>=first?'#5aa87a':'#cf6b5b';
+  let line='';pts.forEach((p,i)=>{line+=(i?'L':'M')+p._x.toFixed(1)+','+p._y.toFixed(1);});
+  const area=line+`L${pts[pts.length-1]._x.toFixed(1)},${Y(lo).toFixed(1)}L${pts[0]._x.toFixed(1)},${Y(lo).toFixed(1)}Z`;
+  let grid='',ylab='';
+  [0,.5,1].forEach(f=>{const v=lo+(hi-lo)*f,y=Y(v).toFixed(1);
+    grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36"/>`;
+    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">€${v>=100?Math.round(v):v.toFixed(1).replace('.',',')}</text>`;});
+  const xd=[pts[0],pts[Math.floor(pts.length/2)],pts[pts.length-1]];
+  let xlab='';xd.forEach((p,i)=>{const a=i===0?'start':(i===2?'end':'middle');
+    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${fmtShort(p.date)}</text>`;});
+  wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="koersgrafiek">
+    <defs><linearGradient id="fundgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="0.22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
+    ${grid}<path d="${area}" fill="url(#fundgrad)"/>
+    <path d="${line}" fill="none" stroke="${col}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>
+    ${ylab}${xlab}
+    <g id="fcross" style="display:none"><line id="fcl" y1="${PT}" y2="${PT+plotH}" stroke="#ece6da" stroke-opacity="0.4"/><circle id="fcv" r="5" fill="#181c25" stroke="${col}" stroke-width="2.5"/></g>
+  </svg>`;
+  const setR=p=>{const ch=(p.price-first)/first*100,c=ch>=0?'up':'down';
+    readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span><span class="ro-item"><span>${eur(p.price)}</span><span class="ro-pct ${c}">${pct(ch)}</span></span>`;};
+  setR(pts[pts.length-1]);
+  const svg=wrap.querySelector('svg'),cr=svg.querySelector('#fcross'),cl=svg.querySelector('#fcl'),cv=svg.querySelector('#fcv');
+  const nearest=cx=>{const r=svg.getBoundingClientRect();const xv=((cx-r.left)/r.width)*W;let b=pts[0],bd=Infinity;for(const p of pts){const d=Math.abs(p._x-xv);if(d<bd){bd=d;b=p;}}return b;};
+  const move=cx=>{const p=nearest(cx);cr.style.display='';cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);cv.setAttribute('cx',p._x);cv.setAttribute('cy',p._y);setR(p);};
+  const end=()=>{cr.style.display='none';setR(pts[pts.length-1]);};
   svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
   svg.addEventListener('pointermove',ev=>move(ev.clientX));
   ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
@@ -649,6 +759,21 @@ function updateControlHint(){
     ? 'Nog geen koersen — voeg ze toe via “Koersen”, of stel later de automatische feed in.'
     : (stale?'Sommige koersen zijn ouder dan 4 dagen.':'Koersen actueel.');
 }
+
+function updateDemoToggle(){
+  const b=$('demoToggle');if(!b)return;
+  b.textContent=DEMO?'Demo aan':'Demo';
+  b.classList.toggle('on',DEMO);
+}
+$('demoToggle').onclick=()=>{
+  if(DEMO){                       // terug naar je eigen data (blijft veilig in de opslag)
+    DEMO=false;
+    TX=load(LS_TX,[]);PRICES=load(LS_PRICES,{});TARGETS=load(LS_TARGETS,null);HISTORY=null;
+    render();loadFeeds();
+  }else{                          // demo tonen zonder je echte cijfers te wissen
+    enterDemo();render();
+  }
+};
 
 /* ============================================================
    IMPORT-FLOW

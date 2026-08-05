@@ -39,7 +39,7 @@ h1,h2,h3{font-family:'Fraunces',Georgia,serif;font-weight:500;margin:0}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--brass)}
 button{font-family:inherit;cursor:pointer}
 a{color:var(--brass)}
-
+ 
 /* header */
 header{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:14px 0 20px;border-bottom:1px solid var(--line);margin-bottom:22px}
 header h1{font-size:24px;letter-spacing:.01em}
@@ -49,7 +49,7 @@ header .demo-toggle:hover{border-color:var(--brass)}
 header .demo-toggle.on{background:rgba(198,161,91,.16);border-color:var(--brass);color:var(--brass)}
 header .sync{font-family:var(--mono);font-size:11px;color:var(--muted);text-align:right;line-height:1.4}
 header .sync b{color:var(--paper);font-weight:500}
-
+ 
 /* hero */
 .hero{margin-bottom:8px}
 .hero .val{font-family:'Fraunces',serif;font-size:44px;font-weight:500;letter-spacing:-.01em;line-height:1.05}
@@ -57,13 +57,13 @@ header .sync b{color:var(--paper);font-weight:500}
 .hero .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-family:var(--mono);font-size:12.5px;margin-left:4px}
 .hero .pill.up{background:rgba(90,168,122,.14)}
 .hero .pill.down{background:rgba(207,107,91,.14)}
-
+ 
 /* demo-banner */
 .demo-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;background:rgba(198,161,91,.10);border:1px solid rgba(198,161,91,.38);border-radius:12px;padding:12px 14px;margin:0 0 18px}
 .demo-banner .txt{font-size:12.5px;line-height:1.5;color:var(--paper);flex:1;min-width:200px}
 .demo-banner .txt b{color:var(--brass);font-weight:600}
 .demo-banner .btn{padding:8px 12px;font-size:12.5px;white-space:nowrap}
-
+ 
 /* chart */
 .chartcard{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px 14px 12px;margin:18px 0 26px}
 .chartcard h3{font-size:15px;font-family:'Inter';font-weight:600;margin:0 2px 10px;color:var(--paper)}
@@ -79,18 +79,29 @@ header .sync b{color:var(--paper);font-weight:500}
 .readout .ro-gain.up{color:var(--up)}
 .readout .ro-gain.down{color:var(--down)}
 .chartwrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 2px 0;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
+.chart-legend button{background:none;border:0;padding:0;display:inline-flex;align-items:center;gap:6px;color:inherit;font:inherit;cursor:pointer}
+.chart-legend button.off{opacity:.4}
+.chart-legend i{width:15px;height:2px;border-radius:2px;display:inline-block;flex:none}
+.chart-stats{margin:12px 2px 0;border-top:1px solid var(--line);padding-top:10px}
+.chart-stats .r{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:3px 0;font-size:13px}
+.chart-stats .r .k{color:var(--muted);font-size:12px}
+.chart-stats .r .v{font-family:var(--mono);white-space:nowrap}
+.chart-stats .r .v.up{color:var(--up)}
+.chart-stats .r .v.down{color:var(--down)}
+.chart-stats .note{color:var(--muted);font-size:11px;line-height:1.55;margin-top:7px;opacity:.85}
 svg{display:block;width:100%;height:auto}
 .proj-note{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:400;letter-spacing:.02em}
 .proj-controls{display:flex;flex-wrap:wrap;gap:9px 14px;margin:8px 2px 12px}
 .proj-controls label{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .proj-controls input{width:62px;background:var(--ink);border:1px solid var(--line);color:var(--paper);font-family:var(--mono);font-size:13px;padding:6px 8px;border-radius:8px}
 .proj-controls input:focus{outline:2px solid var(--brass);outline-offset:1px}
-
+ 
 /* section heads */
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 4px 12px}
 .sec h2{font-size:19px}
 .sec .eyebrow{margin-bottom:0}
-
+ 
 /* holding cards */
 .hold{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:15px 16px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
 .hold:hover{border-color:var(--brass)}
@@ -109,7 +120,7 @@ svg{display:block;width:100%;height:auto}
 .detail-periods{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 8px}
 .period-btn{background:var(--ink3);border:1px solid var(--line);color:var(--muted);padding:6px 13px;border-radius:20px;font-size:12.5px;font-family:var(--mono)}
 .period-btn.on{background:rgba(198,161,91,.16);border-color:var(--brass);color:var(--brass)}
-
+ 
 /* allocation + rebalance */
 .panel{background:var(--ink2);border:1px solid var(--line);border-radius:var(--radius);padding:16px;margin-bottom:12px}
 .alloc-row{display:flex;align-items:center;gap:10px;margin:9px 0;font-family:var(--mono);font-size:13px}
@@ -128,7 +139,7 @@ input[type=number],input[type=text]{
 input:focus{outline:2px solid var(--brass);outline-offset:1px}
 .rb-out{margin-top:10px;font-family:var(--mono);font-size:13px;line-height:1.9}
 .rb-out .row{display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:6px}
-
+ 
 /* controls */
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
 .btn{background:var(--ink3);border:1px solid var(--line);color:var(--paper);padding:10px 14px;border-radius:10px;font-size:13.5px;display:inline-flex;align-items:center;gap:7px}
@@ -136,18 +147,18 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
 .btn.primary{background:var(--brass);border-color:var(--brass);color:#1a1206;font-weight:600}
 .btn.ghost{background:transparent}
 .hint{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.55}
-
+ 
 /* price editor */
 .pe-row{display:flex;align-items:center;gap:10px;margin:10px 0;font-family:var(--mono);font-size:13px}
 .pe-row .nm{width:70px}
 .pe-row .stale{font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(207,107,91,.15);color:var(--down)}
 .pe-row .fresh{font-size:11px;padding:1px 7px;border-radius:10px;background:rgba(90,168,122,.14);color:var(--up)}
-
+ 
 /* empty state */
 .empty{text-align:center;padding:48px 20px;border:1px dashed var(--line);border-radius:var(--radius);margin:20px 0}
 .empty h2{font-size:22px;margin-bottom:8px}
 .empty p{color:var(--muted);max-width:420px;margin:0 auto 18px}
-
+ 
 /* modal */
 .modal-bg{position:fixed;inset:0;background:rgba(6,8,12,.72);display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
 .modal-bg.on{display:flex}
@@ -165,7 +176,7 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
 </style>
 </head>
 <body>
-
+ 
 <header>
   <h1>Portefeuille</h1>
   <div class="hdr-right">
@@ -173,9 +184,9 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
     <div class="sync" id="syncStatus">lokaal opgeslagen</div>
   </div>
 </header>
-
+ 
 <div id="app"></div>
-
+ 
 <div class="controls">
   <label class="btn primary" for="importFile">&#8681; Saxo-export importeren</label>
   <input id="importFile" type="file" accept=".xlsx,.xls" style="display:none">
@@ -185,12 +196,12 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
   <input id="restoreFile" type="file" accept=".json" style="display:none">
 </div>
 <div class="hint" id="controlHint"></div>
-
+ 
 <div class="foot">
   Je transacties blijven op dit toestel (en, indien ingesteld, in je eigen cloud). Ze worden nooit naar de openbare code gestuurd.
   Koersen zijn indicatief en kunnen licht afwijken van je broker.
 </div>
-
+ 
 <!-- Import-voorbeeld modal -->
 <div class="modal-bg" id="importModal">
   <div class="modal">
@@ -203,7 +214,7 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
     </div>
   </div>
 </div>
-
+ 
 <!-- Koers-editor modal -->
 <div class="modal-bg" id="priceModal">
   <div class="modal">
@@ -216,7 +227,7 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
     </div>
   </div>
 </div>
-
+ 
 <!-- Doelverdeling modal -->
 <div class="modal-bg" id="targetModal">
   <div class="modal">
@@ -230,7 +241,7 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
     </div>
   </div>
 </div>
-
+ 
 <!-- Fonds-detail (koersgrafiek + periodes) -->
 <div class="modal-bg" id="detailModal">
   <div class="modal">
@@ -242,27 +253,31 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
     <div class="controls" style="margin-top:8px"><button class="btn ghost" id="closeDetail">Sluiten</button></div>
   </div>
 </div>
-
+ 
 <!-- SheetJS voor het lezen van de Saxo .xlsx -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <script>
 /* ============================================================
    CONFIG
    ============================================================ */
-
+ 
 // Yahoo-tickers per ISIN (voor referentie / handmatige opzoeking).
 const META = {
   'IE00B4L5Y983':{name:'iShares Core MSCI World',       symbol:'IWDA', yahoo:'IWDA.AS', order:1},
   'IE00BCBJG560':{name:'SPDR MSCI World Small Cap',      symbol:'ZPRS', yahoo:'ZPRS.DE', order:2},
   'IE00BKM4GZ66':{name:'iShares Core MSCI EM IMI',       symbol:'EMIM', yahoo:'EMIM.AS', order:3},
 };
-
+ 
+// ---- Referentie voor de vergelijkingslijn: "wat als alles in IWDA zat?"
+const BENCH_ISIN='IE00B4L5Y983';
+const BENCH_NAAM='alles in IWDA';
+ 
 // ---- Firebase-sync (optioneel). Vul dit later in met je eigen projectgegevens.
 //      Zolang dit leeg is, werkt de app gewoon lokaal (localStorage).
 const FIREBASE_CONFIG = null; /* bv:
 const FIREBASE_CONFIG = { apiKey:"...", authDomain:"...", projectId:"...", appId:"..." };
 */
-
+ 
 /* ============================================================
    DEMO-MODUS  (fictief voorbeeld vóór je eigen import)
    €25.000 over vier momenten, herbalancerend naar 80/15/5.
@@ -325,25 +340,25 @@ function enterDemo(){
   TARGETS={'IE00B4L5Y983':80,'IE00BCBJG560':15,'IE00BKM4GZ66':5};
 }
 function exitDemo(){DEMO=false;TX=[];PRICES={};HISTORY=null;TARGETS=null;}
-
-
+ 
+ 
 /* ============================================================
    STATE + OPSLAG
    ============================================================ */
 const LS_TX = 'pf_tx_v1';
 const LS_PRICES = 'pf_prices_v1';
 const LS_TARGETS = 'pf_targets_v1';
-
+ 
 let TX = load(LS_TX, []);            // transacties
 let PRICES = load(LS_PRICES, {});    // {isin:{price,date,source}}
 let TARGETS = load(LS_TARGETS, null);
 let PROJ = load('pf_proj_v1', {ret:8, low:5, high:11, monthly:0});  // projectie-instellingen
-
+ 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
 function savePROJ(){save('pf_proj_v1',PROJ);}
 function persist(){if(DEMO)return;save(LS_TX,TX);save(LS_PRICES,PRICES);save(LS_TARGETS,TARGETS);cloudPush();}
-
+ 
 const $=id=>document.getElementById(id);
 const eur=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR'}).format(n||0);
 const eur0=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
@@ -353,7 +368,7 @@ const pctPlain=n=>nf1.format(n)+'%';
 const fmtDate=d=>new Date(d+'T00:00:00').toLocaleDateString('nl-BE',{day:'numeric',month:'short',year:'numeric'});
 const todayISO=()=>new Date().toISOString().slice(0,10);
 function daysBetween(a,b){return Math.round((new Date(b)-new Date(a))/86400000);}
-
+ 
 /* ============================================================
    SAXO-PARSER  (gevalideerd op de echte export)
    - juiste tabblad: "Trades"
@@ -395,7 +410,7 @@ function parseSaxo(arrbuf){
   }
   return out;
 }
-
+ 
 /* ============================================================
    BEREKENINGEN
    ============================================================ */
@@ -433,7 +448,7 @@ function defaultTargets(pos,totInv){
   const t={};for(const p of pos)t[p.isin]=Math.round((p.invested/totInv)*100);
   return t;
 }
-
+ 
 /* ============================================================
    RENDER
    ============================================================ */
@@ -450,11 +465,11 @@ function render(){
   }
   const e=enrich();
   if(!TARGETS)TARGETS=defaultTargets(e.pos,e.totInv);
-
+ 
   const plClass=e.pl==null?'':(e.pl>=0?'up':'down');
   const heroVal = e.totVal!=null ? eur(e.totVal) : eur(e.totInv);
   const heroLabel = e.totVal!=null ? 'huidige waarde' : 'geïnvesteerd (koersen ontbreken)';
-
+ 
   let html=`<div class="hero">
     <div class="eyebrow">${heroLabel}</div>
     <div class="val">${heroVal}</div>
@@ -463,14 +478,14 @@ function render(){
       ${e.pl!=null?`<span class="pill ${plClass}">${e.pl>=0?'▲':'▼'} ${eur(Math.abs(e.pl))} · ${pct(e.plPct)}</span>`:''}
     </div>
   </div>`;
-
+ 
   if(DEMO)html=`<div class="demo-banner">
     <div class="txt"><b>Demovoorbeeld</b> — fictieve cijfers om de app te tonen (€25.000 over vier momenten, herbalancerend). Importeer je eigen Saxo-export voor je echte portefeuille.</div>
     <label class="btn primary" for="importFile">Mijn export importeren</label>
   </div>`+html;
-
+ 
   html+=renderChart();
-
+ 
   // Posities
   html+=`<div class="sec"><h2>Posities</h2><span class="eyebrow">${e.pos.length} fondsen</span></div>`;
   for(const p of e.pos){
@@ -492,7 +507,7 @@ function render(){
       <div class="bar"><i style="width:${Math.min(100,p.weight)}%"></i></div>
     </div>`;
   }
-
+ 
   // Allocatie + herbalanceren
   html+=`<div class="sec"><h2>Allocatie & herbalanceren</h2></div>`;
   html+=`<div class="panel"><div class="muted" style="font-size:12.5px;margin-bottom:10px">Balk = huidig gewicht · streepje = jouw doel</div>`;
@@ -511,26 +526,35 @@ function render(){
     </div>
     <div class="rb-out" id="rbOut"></div>
   </div>`;
-
+ 
   app.innerHTML=html+renderProjection();
   drawChart();
   drawProjection();
   wireRebalance(e);
   updateControlHint();
 }
-
+ 
 /* ---- Waardeverloop-grafiek ----
    Met history.json: portefeuillewaarde per dag vs. cumulatief ingelegd.
    Zonder history.json: ingelegd-in-stappen + huidige-waarde-punt (eerlijke fallback). */
 let HISTORY=null; // {isin:[[date,price],...]}
+let CHART_PERIOD='MAX';                 // gekozen periode voor de hoofdgrafiek
+let SHOW_BENCH=load('pf_bench_v1',true);// referentielijn aan/uit (onthouden)
+const CHART_PERIODS=[['1M','1M'],['6M','6M'],['1J','1J'],['5J','5J'],['MAX','Max']];
+const PERIOD_DAYS={'1M':31,'6M':183,'1J':366,'5J':1827};
+const PERIOD_LABEL={'1M':'de laatste maand','6M':'de laatste 6 maanden','1J':'het laatste jaar','5J':'de laatste 5 jaar','MAX':'de volledige periode'};
+ 
 function renderChart(){
   return `<div class="chartcard">
     <h3>Waardeverloop</h3>
+    <div class="detail-periods" id="chartPeriods"></div>
     <div class="readout" id="chartReadout"></div>
     <div class="chartwrap" id="chartWrap"></div>
+    <div class="chart-legend" id="chartLegend"></div>
+    <div class="chart-stats" id="chartStats"></div>
   </div>`;
 }
-
+ 
 /* Bouwt één tijdlijn met per (beurs)dag: cumulatief ingelegd + portefeuillewaarde.
    Met history.json = dagelijkse waardelijn; zonder = eerlijke 2-puntslijn. */
 function buildChartSeries(){
@@ -541,7 +565,7 @@ function buildChartSeries(){
   const sign=t=>((t.side||'').toLowerCase()==='sell'?-1:1);
   const investedAt=d=>{let c=0;for(const t of txSorted)if(t.date<=d)c+=sign(t)*t.value;return c;};
   const heldAt=d=>{const q={};for(const t of txSorted)if(t.date<=d)q[t.isin]=(q[t.isin]||0)+sign(t)*t.qty;return q;};
-
+ 
   let timeline;
   if(HISTORY){
     const ds=new Set();
@@ -551,7 +575,7 @@ function buildChartSeries(){
   }else{
     timeline=[start,todayISO()];
   }
-
+ 
   const idx={},lastPrice={};
   if(HISTORY)for(const isin in HISTORY)idx[isin]=0;
   const points=[];
@@ -574,42 +598,136 @@ function buildChartSeries(){
   if(!HISTORY)points[0].value=points[0].invested;
   return {points,hasValue:points.some(p=>p.value!=null)};
 }
-
+ 
+/* ---- Periodefilter voor de hoofdgrafiek ---- */
+function slicePeriod(points){
+  if(CHART_PERIOD==='MAX'||points.length<3)return points;
+  const days=PERIOD_DAYS[CHART_PERIOD]||366;
+  const cut=new Date(Date.now()-days*86400000).toISOString().slice(0,10);
+  const sub=points.filter(p=>p.date>=cut);
+  return sub.length>=2?sub:points;   // te weinig historie -> toon gewoon alles
+}
+ 
+/* ---- Referentielijn: zelfde geld, maar volledig in IWDA ----
+   Vertrekpunt = je werkelijke portefeuillewaarde op de eerste dag van de grafiek,
+   omgezet in IWDA-eenheden. Elke latere aan- of verkoop gaat daarna ook naar IWDA.
+   Zo lees je af of ZPRS en EMIM iets hebben toegevoegd in deze periode. */
+function benchSeries(pts){
+  if(!HISTORY||!HISTORY[BENCH_ISIN])return null;
+  const arr=HISTORY[BENCH_ISIN];
+  const priceAt=d=>{let lo=0,hi=arr.length-1,res=null;
+    while(lo<=hi){const m=(lo+hi)>>1;if(arr[m][0]<=d){res=arr[m][1];lo=m+1;}else hi=m-1;}
+    return res;};
+  const i0=pts.findIndex(p=>p.value!=null&&priceAt(p.date)!=null);
+  if(i0<0)return null;
+  const px0=priceAt(pts[i0].date);
+  if(!px0)return null;
+  let units=pts[i0].value/px0;
+  const txSorted=[...TX].sort((a,b)=>a.date.localeCompare(b.date));
+  const sign=t=>((t.side||'').toLowerCase()==='sell'?-1:1);
+  let ti=0;
+  while(ti<txSorted.length&&txSorted[ti].date<=pts[i0].date)ti++;   // startwaarde bevat die al
+  const out=pts.map(()=>null);
+  out[i0]=pts[i0].value;
+  for(let i=i0+1;i<pts.length;i++){
+    while(ti<txSorted.length&&txSorted[ti].date<=pts[i].date){
+      const t=txSorted[ti],px=priceAt(t.date);
+      if(px)units+=sign(t)*t.value/px;
+      ti++;
+    }
+    const px=priceAt(pts[i].date);
+    out[i]=px!=null?units*px:null;
+  }
+  return out.some(v=>v!=null)?out:null;
+}
+ 
+/* ---- XIRR: geldgewogen jaarrendement (bisectie, geen afgeleiden nodig) ---- */
+function xirr(flows){
+  if(flows.length<2)return null;
+  const t0=new Date(flows[0].date+'T00:00:00').getTime();
+  const yrs=d=>(new Date(d+'T00:00:00').getTime()-t0)/(365.25*86400000);
+  const npv=r=>flows.reduce((s,f)=>s+f.amount/Math.pow(1+r,yrs(f.date)),0);
+  let lo=-0.95,hi=5,flo=npv(lo),fhi=npv(hi);
+  if(!isFinite(flo)||!isFinite(fhi)||flo*fhi>0)return null;
+  for(let i=0;i<160;i++){
+    const mid=(lo+hi)/2,fm=npv(mid);
+    if(flo*fm<=0){hi=mid;fhi=fm;}else{lo=mid;flo=fm;}
+  }
+  const r=(lo+hi)/2;
+  return isFinite(r)?r:null;
+}
+ 
+/* Startwaarde als uitgaande kasstroom, stortingen erbij, eindwaarde als opbrengst.
+   Onder ~9 maanden is een jaarcijfer meer ruis dan signaal -> dan niets tonen. */
+function jaarRendement(pts){
+  const first=pts.find(p=>p.value!=null);
+  let last=null;for(let i=pts.length-1;i>=0;i--){if(pts[i].value!=null){last=pts[i];break;}}
+  if(!first||!last||first===last)return null;
+  if(daysBetween(first.date,last.date)<270)return null;
+  const sign=t=>((t.side||'').toLowerCase()==='sell'?-1:1);
+  const flows=[{date:first.date,amount:-first.value}];
+  for(const t of TX)if(t.date>first.date&&t.date<=last.date)flows.push({date:t.date,amount:-sign(t)*t.value});
+  flows.push({date:last.date,amount:last.value});
+  flows.sort((a,b)=>a.date.localeCompare(b.date));
+  return xirr(flows);
+}
+ 
 function niceNum(x){const mag=Math.pow(10,Math.floor(Math.log10(x)));const n=x/mag;const s=n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10;return s*mag;}
 function chartScale(maxv){const target=(maxv||1)*1.08;const step=niceNum(target/3);const top=Math.ceil(target/step)*step;const lines=[];for(let v=0;v<=top+1;v+=step)lines.push(v);return {top,lines};}
 function kEur(v){return v>=1000?'€'+Math.round(v/1000)+'k':'€'+Math.round(v);}
-
+ 
 function drawChart(){
   const wrap=$('chartWrap'),readout=$('chartReadout');
   if(!wrap)return;
   const s=buildChartSeries();
   if(!s){wrap.innerHTML='';return;}
-  const pts=s.points;
-
+  const all=s.points;
+  const pts=slicePeriod(all);
+ 
+  // Periodeknoppen — enkel zinvol als er dagelijkse historie is
+  const perEl=$('chartPeriods');
+  if(perEl){
+    if(all.length<3){perEl.innerHTML='';}
+    else{
+      perEl.innerHTML=CHART_PERIODS.map(([k,l])=>`<button class="period-btn${k===CHART_PERIOD?' on':''}" data-p="${k}">${l}</button>`).join('');
+      perEl.querySelectorAll('button').forEach(b=>b.onclick=()=>{CHART_PERIOD=b.dataset.p;drawChart();});
+    }
+  }
+ 
+  const bench=SHOW_BENCH?benchSeries(pts):null;
+  const benchAvailable=!!benchSeries(pts);
+ 
   const W=700,H=280,PL=46,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
   const t0=new Date(pts[0].date+'T00:00:00').getTime();
   const t1=new Date(pts[pts.length-1].date+'T00:00:00').getTime();
   const invVals=pts.map(p=>p.invested);
   const valVals=pts.filter(p=>p.value!=null).map(p=>p.value);
-  const sc=chartScale(Math.max(...invVals,...(valVals.length?valVals:[0])));
+  const benchVals=bench?bench.filter(v=>v!=null):[];
+  const sc=chartScale(Math.max(...invVals,...(valVals.length?valVals:[0]),...(benchVals.length?benchVals:[0])));
   const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
   const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
-  pts.forEach(p=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._iy=Y(p.invested);p._vy=p.value!=null?Y(p.value):null;});
-
+  pts.forEach((p,i)=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._iy=Y(p.invested);p._vy=p.value!=null?Y(p.value):null;
+    p._b=bench?bench[i]:null;p._by=(p._b!=null)?Y(p._b):null;});
+  let benchPath='';
+  if(bench){let started=false;
+    pts.forEach(p=>{if(p._by==null)return;benchPath+=(started?'L':'M')+p._x.toFixed(1)+','+p._by.toFixed(1);started=true;});}
+ 
   const vpts=pts.filter(p=>p.value!=null);
   let valPath='',valArea='';
   vpts.forEach((p,i)=>{valPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._vy.toFixed(1);});
   if(vpts.length)valArea=valPath+`L${vpts[vpts.length-1]._x.toFixed(1)},${Y(0).toFixed(1)}L${vpts[0]._x.toFixed(1)},${Y(0).toFixed(1)}Z`;
   let invPath='';pts.forEach((p,i)=>{invPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._iy.toFixed(1);});
-
+ 
   let grid='',ylab='';
   sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
     grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36" stroke-width="1"/>`;
     ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+  const spanDagen=daysBetween(pts[0].date,pts[pts.length-1].date);
+  const xOpm=spanDagen<120?{day:'numeric',month:'short'}:{month:'short',year:'2-digit'};
   const xd=[pts[0],pts[Math.floor(pts.length/2)],pts[pts.length-1]];
   let xlab='';xd.forEach((p,i)=>{const a=i===0?'start':(i===2?'end':'middle');
-    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${new Date(p.date+'T00:00:00').toLocaleDateString('nl-BE',{month:'short',year:'2-digit'})}</text>`;});
-
+    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${new Date(p.date+'T00:00:00').toLocaleDateString('nl-BE',xOpm)}</text>`;});
+ 
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="waardeverloop">
     <defs><linearGradient id="valgrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#c6a15b" stop-opacity="0.30"/>
@@ -617,41 +735,90 @@ function drawChart(){
     ${grid}
     ${valArea?`<path d="${valArea}" fill="url(#valgrad)"/>`:''}
     <path d="${invPath}" fill="none" stroke="#7f8896" stroke-width="1.5" stroke-dasharray="5 4" stroke-linejoin="round"/>
+    ${benchPath?`<path d="${benchPath}" fill="none" stroke="#6b8fbe" stroke-width="1.6" stroke-dasharray="1 3.5" stroke-linecap="round"/>`:''}
     ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`:''}
     ${ylab}${xlab}
     <g id="cross" style="display:none">
       <line id="crossLine" y1="${PT}" y2="${PT+plotH}" stroke="#ece6da" stroke-opacity="0.4" stroke-width="1"/>
       <circle id="crossInv" r="4.5" fill="#181c25" stroke="#7f8896" stroke-width="2"/>
+      <circle id="crossBen" r="4.5" fill="#181c25" stroke="#6b8fbe" stroke-width="2" style="display:none"/>
       <circle id="crossVal" r="5" fill="#181c25" stroke="#c6a15b" stroke-width="2.5"/>
     </g>
   </svg>`;
-
+ 
   const setReadout=p=>{
     const gain=p.value!=null?p.value-p.invested:null;
     const gpct=(gain!=null&&p.invested>0)?(gain/p.invested)*100:null;
     const cls=gain==null?'':(gain>=0?'up':'down');
     readout.innerHTML=`<span class="ro-date">${fmtDate(p.date)}</span>
     <span class="ro-item"><i style="background:#c6a15b"></i><span>${p.value!=null?eur(p.value):'—'}</span>${gpct!=null?`<span class="ro-pct ${cls}">${pct(gpct)}</span><span class="ro-gain ${cls}">${gain>=0?'+':'−'}${eur(Math.abs(gain))}</span>`:''}</span>
-    <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.invested)}</span></span>`;};
+    <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.invested)}</span></span>
+    ${p._b!=null?`<span class="ro-item"><i style="background:#6b8fbe"></i><span class="lbl">IWDA</span><span>${eur(p._b)}</span></span>`:''}`;};
   setReadout(pts[pts.length-1]);
-
+ 
+  // ---- legende (referentielijn is aan/uit te tikken) ----
+  const legEl=$('chartLegend');
+  if(legEl){
+    legEl.innerHTML=`
+      <button type="button" disabled style="cursor:default"><i style="background:#c6a15b"></i>waarde</button>
+      <button type="button" disabled style="cursor:default"><i style="background:#7f8896"></i>ingelegd</button>
+      ${benchAvailable?`<button type="button" id="benchToggle" class="${SHOW_BENCH?'':'off'}"><i style="background:#6b8fbe"></i>${BENCH_NAAM}</button>`:''}`;
+    const bt=$('benchToggle');
+    if(bt)bt.onclick=()=>{SHOW_BENCH=!SHOW_BENCH;save('pf_bench_v1',SHOW_BENCH);drawChart();};
+  }
+ 
+  // ---- cijfers onder de grafiek ----
+  const statEl=$('chartStats');
+  if(statEl){
+    const eerste=pts.find(p=>p.value!=null);
+    let laatste=null;for(let i=pts.length-1;i>=0;i--){if(pts[i].value!=null){laatste=pts[i];break;}}
+    let rows='',note='';
+    if(eerste&&laatste&&eerste!==laatste){
+      // Groei zonder de eigen stortingen: alleen wat de markt deed.
+      const groei=(laatste.value-laatste.invested)-(eerste.value-eerste.invested);
+      const gc=groei>=0?'up':'down';
+      rows+=`<div class="r"><span class="k">Groei over ${PERIOD_LABEL[CHART_PERIOD]}<br><span style="opacity:.7">zonder je nieuwe stortingen</span></span>
+             <span class="v ${gc}">${groei>=0?'+':'−'}${eur(Math.abs(groei))}</span></div>`;
+ 
+      const jr=jaarRendement(pts);
+      if(jr!=null){
+        const jc=jr>=0?'up':'down';
+        rows+=`<div class="r"><span class="k">Gemiddeld per jaar<br><span style="opacity:.7">geldgewogen, houdt rekening met wanneer je stortte</span></span>
+               <span class="v ${jc}">${pct(jr*100)}</span></div>`;
+      }
+ 
+      if(bench&&laatste._b!=null){
+        const idx=pts.indexOf(laatste);
+        const verschil=laatste.value-bench[idx];
+        const vc=verschil>=0?'up':'down';
+        rows+=`<div class="r"><span class="k">Tegenover ${BENCH_NAAM}</span>
+               <span class="v ${vc}">${verschil>=0?'+':'−'}${eur(Math.abs(verschil))} ${verschil>=0?'beter':'minder'}</span></div>`;
+        note=`De referentielijn zet je portefeuille op ${fmtDate(eerste.date)} volledig om in IWDA en stopt daarna elke storting daar ook in. Het verschil is dus wat ZPRS en EMIM in deze periode hebben toegevoegd of gekost.`;
+      }
+    }
+    statEl.innerHTML=rows?rows+(note?`<div class="note">${note}</div>`:''):'';
+    statEl.style.display=rows?'':'none';
+  }
+ 
   // ---- interactief scrubben (touch + muis) ----
   const svg=wrap.querySelector('svg');
   const cross=svg.querySelector('#cross'),cl=svg.querySelector('#crossLine'),
-        ci=svg.querySelector('#crossInv'),cv=svg.querySelector('#crossVal');
+        ci=svg.querySelector('#crossInv'),cv=svg.querySelector('#crossVal'),
+        cb=svg.querySelector('#crossBen');
   const nearest=clientX=>{const r=svg.getBoundingClientRect();const xv=((clientX-r.left)/r.width)*W;
     let best=pts[0],bd=Infinity;for(const p of pts){const d=Math.abs(p._x-xv);if(d<bd){bd=d;best=p;}}return best;};
   const move=clientX=>{const p=nearest(clientX);cross.style.display='';
     cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);
     ci.setAttribute('cx',p._x);ci.setAttribute('cy',p._iy);
     if(p._vy!=null){cv.style.display='';cv.setAttribute('cx',p._x);cv.setAttribute('cy',p._vy);}else cv.style.display='none';
+    if(p._by!=null){cb.style.display='';cb.setAttribute('cx',p._x);cb.setAttribute('cy',p._by);}else cb.style.display='none';
     setReadout(p);};
   const end=()=>{cross.style.display='none';setReadout(pts[pts.length-1]);};
   svg.addEventListener('pointerdown',ev=>{try{svg.setPointerCapture(ev.pointerId);}catch(e){}move(ev.clientX);});
   svg.addEventListener('pointermove',ev=>move(ev.clientX));
   ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
 }
-
+ 
 /* ============================================================
    PROJECTIE tot 2055 (schatting op basis van een verondersteld
    jaarrendement + optionele maandinleg; met pessimistisch/optimistisch
@@ -694,20 +861,20 @@ function drawProjection(){
   if(!wrap)return;
   const bind=(id,key)=>{const el=$(id);if(el)el.oninput=()=>{const v=Number(el.value);if(!isNaN(v)){PROJ[key]=v;savePROJ();drawProjection();}};};
   bind('projRet','ret');bind('projLow','low');bind('projHigh','high');bind('projMon','monthly');
-
+ 
   const hs=buildChartSeries();
   const proj=projectSeries();
   const today=new Date();today.setHours(0,0,0,0);const tT=today.getTime();
   const hist=hs?hs.points.filter(p=>p.value!=null).map(p=>({t:new Date(p.date+'T00:00:00').getTime(),v:p.value,inv:p.invested})):[];
   const histInv=hs?hs.points.map(p=>({t:new Date(p.date+'T00:00:00').getTime(),inv:p.invested})):[];
-
+ 
   const W=700,H=270,PL=48,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
   const t0=hist.length?hist[0].t:tT, t1=proj[proj.length-1].t;
   const allV=[...hist.map(p=>p.v),...histInv.map(p=>p.inv),...proj.map(p=>p.high),...proj.map(p=>p.invested)];
   const sc=chartScale(Math.max(...allV,1));
   const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
   const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
-
+ 
   const P=arr=>arr.map((p,i)=>(i?'L':'M')+X(p.t).toFixed(1)+','+p.y.toFixed(1)).join('');
   const histLine=P(hist.map(p=>({t:p.t,y:Y(p.v)})));
   const invAll=[...histInv.map(p=>({t:p.t,y:Y(p.inv)})),...proj.map(p=>({t:p.t,y:Y(p.invested)}))];
@@ -718,7 +885,7 @@ function drawProjection(){
   proj.forEach((p,i)=>{band+=(i?'L':'M')+X(p.t).toFixed(1)+','+Y(p.high).toFixed(1);});
   for(let i=proj.length-1;i>=0;i--){band+='L'+X(proj[i].t).toFixed(1)+','+Y(proj[i].low).toFixed(1);}
   band+='Z';
-
+ 
   let grid='',ylab='';
   sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
     grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36"/>`;
@@ -729,7 +896,7 @@ function drawProjection(){
   let xlab='';years.forEach(y=>{const x=X(new Date(y,0,1).getTime());if(x<PL-2||x>W)return;
     xlab+=`<text x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${y}</text>`;});
   const xToday=X(tT).toFixed(1);
-
+ 
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="projectie">
     ${grid}
     <path d="${band}" fill="rgba(198,161,91,.12)" stroke="none"/>
@@ -744,7 +911,7 @@ function drawProjection(){
       <circle id="pce" r="5" fill="#181c25" stroke="#c6a15b" stroke-width="2.5"/>
     </g>
   </svg>`;
-
+ 
   // scrub-punten samenvoegen
   const scrub=[...hist.map(p=>({t:p.t,kind:'h',v:p.v,inv:p.inv})),
                ...proj.filter(p=>p.t>tT).map(p=>({t:p.t,kind:'p',exp:p.exp,low:p.low,high:p.high,inv:p.invested}))]
@@ -769,7 +936,7 @@ function drawProjection(){
   svg.addEventListener('pointermove',ev=>move(ev.clientX));
   ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,reset));
 }
-
+ 
 /* ============================================================
    FONDS-DETAIL: koersgrafiek per ETF met periodekeuze
    ============================================================ */
@@ -789,7 +956,7 @@ function openDetail(isin){
   drawFundChart();
 }
 $('closeDetail').onclick=()=>$('detailModal').classList.remove('on');
-
+ 
 function fundSeries(){
   const isin=DETAIL_ISIN;
   const arr=(HISTORY&&HISTORY[isin])?HISTORY[isin].map(a=>({date:a[0],price:a[1]})):[];
@@ -847,7 +1014,7 @@ function drawFundChart(){
   svg.addEventListener('pointermove',ev=>move(ev.clientX));
   ['pointerup','pointercancel','pointerleave'].forEach(evn=>svg.addEventListener(evn,end));
 }
-
+ 
 /* ---- Herbalanceren ---- */
 function wireRebalance(e){
   const out=$('rbOut'),amt=$('rbAmount');
@@ -887,7 +1054,7 @@ function openTargets(){
   $('closeTargets').onclick=()=>$('targetModal').classList.remove('on');
   $('targetModal').classList.add('on');
 }
-
+ 
 function updateControlHint(){
   const h=$('controlHint');
   if(DEMO){h.textContent='Je kijkt naar een demovoorbeeld — importeer je export voor je eigen cijfers.';return;}
@@ -898,7 +1065,7 @@ function updateControlHint(){
     ? 'Nog geen koersen — voeg ze toe via “Koersen”, of stel later de automatische feed in.'
     : (stale?'Sommige koersen zijn ouder dan 4 dagen.':'Koersen actueel.');
 }
-
+ 
 function updateDemoToggle(){
   const b=$('demoToggle');if(!b)return;
   b.textContent=DEMO?'Demo aan':'Demo';
@@ -913,7 +1080,7 @@ $('demoToggle').onclick=()=>{
     enterDemo();render();
   }
 };
-
+ 
 /* ============================================================
    IMPORT-FLOW
    ============================================================ */
@@ -956,7 +1123,7 @@ $('confirmImport').onclick=()=>{
   loadFeeds();                   // echte koersen + geschiedenis ophalen
 };
 $('cancelImport').onclick=()=>{pendingImport=[];$('importModal').classList.remove('on');};
-
+ 
 /* ============================================================
    KOERS-EDITOR
    ============================================================ */
@@ -987,7 +1154,7 @@ $('savePrices').onclick=()=>{
   persist();$('priceModal').classList.remove('on');render();
 };
 $('closePrices').onclick=()=>$('priceModal').classList.remove('on');
-
+ 
 /* ============================================================
    BACK-UP / HERSTEL (JSON)
    ============================================================ */
@@ -1010,7 +1177,7 @@ $('restoreFile').addEventListener('change',ev=>{
   }catch(e){alert('Ongeldig back-upbestand.');}};
   rd.readAsText(f);ev.target.value='';
 });
-
+ 
 /* ============================================================
    KOERS-FEED (prices.json) + GESCHIEDENIS (history.json)
    Beide staan op dezelfde GitHub Pages-oorsprong -> geen CORS.
@@ -1039,7 +1206,7 @@ async function loadFeeds(){
   }catch(e){/* geen geschiedenis -> fallback-lijn */}
   render();
 }
-
+ 
 /* ============================================================
    FIREBASE-SYNC (optioneel, laadt alleen bij ingevulde config)
    ============================================================ */
@@ -1074,7 +1241,7 @@ async function initCloud(){
     });
   }catch(e){$('syncStatus').textContent='sync niet beschikbaar';}
 }
-
+ 
 /* ============================================================
    START
    ============================================================ */
@@ -1089,3 +1256,4 @@ initCloud();
 </script>
 </body>
 </html>
+ 

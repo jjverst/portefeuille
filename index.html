@@ -92,7 +92,9 @@ header .sync b{color:var(--paper);font-weight:500}
 .chart-stats .note{color:var(--muted);font-size:11px;line-height:1.55;margin-top:7px;opacity:.85}
 .withdraw{margin:16px 2px 2px;border-top:1px solid var(--line);padding-top:13px}
 .withdraw h4{font-family:'Inter';font-size:13.5px;font-weight:600;color:var(--paper);margin:0 0 3px}
-.withdraw .lead{color:var(--muted);font-size:11.5px;line-height:1.55;margin-bottom:11px}
+.withdraw .lead{color:var(--muted);font-size:12.5px;line-height:1.9;margin-bottom:11px}
+.withdraw .lead input{width:52px;background:var(--ink);border:1px solid var(--line);color:var(--brass);font-family:var(--mono);font-size:13px;text-align:center;padding:4px 5px;border-radius:7px;margin:0 1px}
+.withdraw .lead input:focus{outline:2px solid var(--brass);outline-offset:1px}
 .wd{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12.5px}
 .wd th{color:var(--muted);font-weight:400;font-size:9.5px;letter-spacing:.05em;text-transform:uppercase;text-align:right;padding:0 0 7px;line-height:1.3}
 .wd th:first-child{text-align:left}
@@ -102,6 +104,8 @@ header .sync b{color:var(--paper);font-weight:500}
 .wd tr.hoofd td:first-child{color:var(--brass)}
 .wd tr.hoofd .maand{color:var(--brass);font-size:14px}
 .wd .nu{display:block;color:var(--muted);font-size:10.5px;line-height:1.3;margin-top:3px;opacity:.9}
+.wd .nu.ok{color:var(--up);opacity:.95}
+.wd .nu.op{color:var(--down);opacity:.95}
 .withdraw .lead b{color:var(--paper);font-weight:500}
 .withdraw .note{color:var(--muted);font-size:11px;line-height:1.6;margin-top:11px;opacity:.9}
 .withdraw .note b{color:var(--paper);font-weight:500;opacity:1}
@@ -367,8 +371,9 @@ const LS_TARGETS = 'pf_targets_v1';
 let TX = load(LS_TX, []);            // transacties
 let PRICES = load(LS_PRICES, {});    // {isin:{price,date,source}}
 let TARGETS = load(LS_TARGETS, null);
-let PROJ = load('pf_proj_v1', {ret:8, low:5, high:11, monthly:0, infl:2});  // projectie-instellingen
-if(PROJ.infl==null)PROJ.infl=2;   // bestaande opgeslagen instellingen aanvullen
+let PROJ = load('pf_proj_v1', {ret:8, low:5, high:11, monthly:0, infl:2, opname:4});  // projectie-instellingen
+if(PROJ.infl==null)PROJ.infl=2;       // bestaande opgeslagen instellingen aanvullen
+if(PROJ.opname==null)PROJ.opname=4;
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -849,7 +854,6 @@ function renderProjection(){
       <label>Pessimistisch <input id="projLow" type="number" step="0.5" inputmode="decimal" value="${PROJ.low}">%</label>
       <label>Optimistisch <input id="projHigh" type="number" step="0.5" inputmode="decimal" value="${PROJ.high}">%</label>
       <label>Maandinleg <input id="projMon" type="number" step="50" min="0" inputmode="decimal" value="${PROJ.monthly}">€</label>
-      <label>Inflatie <input id="projInfl" type="number" step="0.1" inputmode="decimal" value="${PROJ.infl}">%</label>
     </div>
     <div class="readout" id="projReadout"></div>
     <div class="chartwrap" id="projWrap"></div>
@@ -880,24 +884,39 @@ function projectSeries(){
    koopkracht. Alles wordt daarnaast omgerekend naar geld van vandaag. */
 const eurKort=n=>n>=1e6?'€ '+nf1.format(n/1e6)+'M':(n>=1000?'€ '+Math.round(n/1000)+'k':eur0(n));
 
+/* Hoe lang gaat het kapitaal mee als je maandelijks opneemt en dat bedrag
+   jaarlijks met de inflatie verhoogt? null = langer dan een eeuw. */
+function jarenTotLeeg(kapitaal,r,infl,maand){
+  if(maand<=0)return null;
+  const g=Math.pow(1+r,1/12);
+  let V=kapitaal,m=maand;
+  for(let j=0;j<100;j++){
+    for(let k=0;k<12;k++){V=V*g-m;if(V<=0)return j+(k+1)/12;}
+    m*=(1+infl);
+  }
+  return null;
+}
+
 function opnameCijfers(){
   const proj=projectSeries();
   const eind=proj[proj.length-1];
   const jaren=Math.max((eind.t-Date.now())/(365.25*86400000),0);
   const infl=(Number(PROJ.infl)||0)/100;
+  const opname=Math.max(Number(PROJ.opname)||0,0)/100;
   const naarNu=Math.pow(1+infl,jaren);          // deler om 2055-euro's naar euro's van nu te brengen
   const rij=(label,rendement,kapitaal)=>{
     const r=(Number(rendement)||0)/100;
     // Je neemt maandelijks op, dus dat geld rendeert de rest van het jaar niet meer.
-    // S is de annuiteitsfactor die daarvoor corrigeert; zonder deze correctie neem je
-    // elk jaar een paar procent te veel en teert je kapitaal op termijn toch in.
+    // S corrigeert daarvoor bij het bepalen van het hoogste houdbare percentage.
     const g=Math.pow(1+r,1/12);
     const S=Math.abs(g-1)<1e-12?12:(Math.pow(g,12)-1)/(g-1);
-    const perMaand=Math.max(kapitaal*(r-infl)/S,0);
-    return {label,kapitaal,kapitaalNu:kapitaal/naarNu,perMaand,perMaandNu:perMaand/naarNu,reeel:((1+r)/(1+infl)-1)*100};
+    const maxPct=Math.max((r-infl)/S*1200,0);   // hierboven teert je kapitaal in
+    const perMaand=kapitaal*opname/12;
+    return {label,kapitaal,kapitaalNu:kapitaal/naarNu,perMaand,perMaandNu:perMaand/naarNu,
+            maxPct,houdbaar:opname*100<=maxPct+1e-9,jarenLeeg:jarenTotLeeg(kapitaal,r,infl,perMaand)};
   };
   return {
-    jaartal:new Date(eind.t).getFullYear(), jaren, infl, naarNu,
+    jaartal:new Date(eind.t).getFullYear(), jaren, infl, naarNu, opnamePct:opname*100,
     rijen:[rij('voorzichtig',PROJ.low,eind.low),rij('verwacht',PROJ.ret,eind.exp),rij('optimistisch',PROJ.high,eind.high)]
   };
 }
@@ -907,19 +926,25 @@ function drawWithdraw(){
   if(!el)return;
   const c=opnameCijfers();
   const v=c.rijen[1];                            // het verwachte scenario
+  const oordeel=r=>r.houdbaar
+    ? `<span class="nu ok">blijft staan</span>`
+    : (r.jarenLeeg==null
+        ? `<span class="nu ok">gaat >100 jaar mee</span>`
+        : `<span class="nu op">leeg na ±${Math.round(r.jarenLeeg)} jaar</span>`);
   const rijen=c.rijen.map((r,i)=>`<tr class="${i===1?'hoofd':''}">
-      <td>${r.label}</td>
+      <td>${r.label}${oordeel(r)}</td>
       <td>${eurKort(r.kapitaal)}<span class="nu">≈ ${eurKort(r.kapitaalNu)} nu</span></td>
       <td class="maand">${r.perMaand>0?eur0(r.perMaand):'—'}${r.perMaandNu>0?`<span class="nu">≈ ${eur0(r.perMaandNu)} nu</span>`:''}</td>
     </tr>`).join('');
+  const houdbaar=c.rijen.map(r=>`${r.label} ${nf1.format(r.maxPct)}%`).join(' · ');
 
-  // Realiteitscheck: markten schommelen, dus een vaste voorzichtige voet ernaast.
-  const veilig=v.kapitaal*0.035/12;
-  const geenGroei=c.rijen.every(r=>r.perMaand<=0);
+  // Het blok wordt bij elke toetsaanslag opnieuw opgebouwd; onthoud waar de cursor stond.
+  const focusEl=document.activeElement;
+  const focusId=focusEl&&focusEl.id, focusPos=(focusEl&&focusEl.selectionStart)||0;
 
   el.innerHTML=`
     <h4>Wat kan je er maandelijks uithalen?</h4>
-    <div class="lead">Enkel het rendement boven de inflatie. Je kapitaal blijft staan én groeit mee met de inflatie, dus het verliest geen koopkracht. <b>≈ nu</b> = wat dat bedrag vandaag waard zou zijn.</div>
+    <div class="lead">Je neemt <input id="wdOpn" type="text" inputmode="decimal" value="${nf1.format(c.opnamePct)}">% per jaar op, elk jaar verhoogd met <input id="wdInfl" type="text" inputmode="decimal" value="${nf1.format(c.infl*100)}">% inflatie. <b>≈ nu</b> = wat dat bedrag vandaag waard zou zijn.</div>
     <table class="wd">
       <thead><tr>
         <th>scenario</th><th>kapitaal<br>${c.jaartal}</th><th>per<br>maand</th>
@@ -927,19 +952,30 @@ function drawWithdraw(){
       <tbody>${rijen}</tbody>
     </table>
     <div class="note">
-      ${geenGroei
-        ? `Bij ${nf1.format(c.infl*100)}% inflatie blijft er van dit rendement niets over om op te nemen. Verhoog het verwachte rendement of verlaag de inflatie om een bedrag te zien.`
-        : `In het verwachte scenario staat er in ${c.jaartal} <b>${eur0(v.kapitaal)}</b>, wat vandaag <b>${eur0(v.kapitaalNu)}</b> waard is. Daarvan kan je <b>${eur0(v.perMaand)}</b> per maand opnemen — koopkracht van <b>${eur0(v.perMaandNu)}</b> in geld van nu. Dat maandbedrag mag je elk jaar met de inflatie verhogen.`}
+      Blijf je onder het rendement min de inflatie, dan groeit je kapitaal mee met de inflatie en blijft de koopkracht ervan gelijk. Precies houdbaar is hier: <b>${houdbaar}</b>.
+      ${v.houdbaar
+        ? `Met ${nf1.format(c.opnamePct)}% zit je in het verwachte scenario dus veilig: <b>${eur0(v.perMaand)}</b> per maand, koopkracht van <b>${eur0(v.perMaandNu)}</b> in geld van nu.`
+        : `Met ${nf1.format(c.opnamePct)}% teer je in het verwachte scenario in${v.jarenLeeg!=null?`; het kapitaal is dan na ongeveer ${Math.round(v.jarenLeeg)} jaar op`:''}.`}
       <br><br>
-      Dit rekent met een gelijkmatig rendement. In het echt schommelen de markten, en een slechte reeks vlak na je eerste opname doet het meeste pijn. Onderzoek naar levenslang opnemen komt daarom meestal rond 3,5% per jaar uit: dat zou hier ${eur0(veilig)} per maand zijn (${eur0(veilig/c.naarNu)} in geld van nu).
+      Dit rekent met een gelijkmatig rendement. In het echt schommelen de markten, en een slechte reeks vlak na je eerste opname doet het meeste pijn. Daarom houden veel mensen bewust 3,5 à 4% aan, ook als het model meer toelaat.
     </div>`;
+
+  // Komma of punt mag allebei; een half getypt veld ("3,") laat de vorige waarde staan.
+  const bindPct=(id,key)=>{const n=$(id);if(!n)return;
+    n.oninput=()=>{const v=parseFloat(String(n.value).replace(',','.'));
+      if(!isNaN(v)&&v>=0){PROJ[key]=v;savePROJ();drawWithdraw();}};
+    n.onblur=()=>drawWithdraw();};   // netjes herformatteren zodra je klaar bent
+  bindPct('wdOpn','opname');bindPct('wdInfl','infl');
+
+  if(focusId){const n=el.querySelector('#'+focusId);
+    if(n){n.focus();try{n.setSelectionRange(focusPos,focusPos);}catch(e){}}}
 }
 
 function drawProjection(){
   const wrap=$('projWrap'),readout=$('projReadout');
   if(!wrap)return;
   const bind=(id,key)=>{const el=$(id);if(el)el.oninput=()=>{const v=Number(el.value);if(!isNaN(v)){PROJ[key]=v;savePROJ();drawProjection();}};};
-  bind('projRet','ret');bind('projLow','low');bind('projHigh','high');bind('projMon','monthly');bind('projInfl','infl');
+  bind('projRet','ret');bind('projLow','low');bind('projHigh','high');bind('projMon','monthly');
   drawWithdraw();
 
   const hs=buildChartSeries();

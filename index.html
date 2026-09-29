@@ -101,6 +101,7 @@ header .sync b{color:var(--paper);font-weight:500}
 .wd th:first-child{text-align:left}
 .wd td{padding:7px 0;text-align:right;border-top:1px solid rgba(43,49,64,.7);white-space:nowrap}
 .wd td:first-child{text-align:left;color:var(--muted);font-size:11.5px}
+.wd td:first-child .nu{white-space:normal}   /* groeiregel mag afbreken, anders duwt ze de tabel buiten beeld */
 .wd tr.hoofd td{color:var(--paper)}
 .wd tr.hoofd td:first-child{color:var(--brass)}
 .wd tr.hoofd .maand{color:var(--brass);font-size:14px}
@@ -1075,6 +1076,7 @@ function naChart(c){
   const basis=[...c.rijen[0].pad,...c.rijen[1].pad,c.rijen[1].kapitaalNu*1.25];
   const sc=chartScale(Math.max(...basis,1));
   c.naAfgekapt=Math.max(...c.rijen[2].pad)>sc.top;
+  c.naBoven=Math.min(...c.rijen[2].pad)>sc.top;   // nergens in beeld: dan het startbedrag noemen
   const X=i=>PL+(i/NA_JAREN)*pw;
   const Y=v=>PT+ph-(v/(sc.top||1))*ph;
   const kleur=['#7f8896','#c6a15b','#6b8fbe'];
@@ -1169,11 +1171,20 @@ function drawWithdraw(){
   if(!el)return;
   const c=opnameCijfers();
   const v=c.rijen[1];                            // het verwachte scenario
-  const oordeel=r=>r.houdbaar
-    ? `<span class="nu ok">blijft staan</span>`
-    : (r.jarenLeeg==null
-        ? `<span class="nu ok">gaat >100 jaar mee</span>`
-        : `<span class="nu op">leeg na ±${Math.round(r.jarenLeeg)} jaar</span>`);
+  // Hoeveel de koopkracht van het kapitaal na NA_JAREN jaar opnemen gestegen of
+  // gedaald is. Komt uit hetzelfde pad als de grafiek "En daarna?", dus de tabel,
+  // de legende en de lijnen zeggen altijd hetzelfde.
+  const groei=r=>{const a=r.pad[0],b=r.pad[NA_JAREN];return a>0?(b/a-1)*100:null;};
+  const pctKort=g=>(g>=0?'+':'−')+(Math.abs(g)<10?nf1.format(Math.abs(g)):Math.round(Math.abs(g)).toLocaleString('nl-BE'))+'%';
+  const oordeel=r=>{
+    const g=groei(r);
+    const regel=g==null?'':`<span class="nu ${g>=0?'ok':'op'}">${pctKort(g)} in ${NA_JAREN} jaar</span>`;
+    if(r.houdbaar)return `<span class="nu ok">${g!=null&&g>=1?'groeit':'blijft staan'}</span>${regel}`;
+    if(r.jarenLeeg==null)return `<span class="nu ok">gaat >100 jaar mee</span>${regel}`;
+    // leeg binnen de grafiek: -100% zegt niets extra
+    return `<span class="nu op">leeg na ±${Math.round(r.jarenLeeg)} jaar</span>${r.jarenLeeg>NA_JAREN?regel:''}`;
+  };
+  const legendePct=r=>{const g=groei(r);return g==null?'':' '+pctKort(g);};
   const rijen=c.rijen.map((r,i)=>`<tr class="${i===1?'hoofd':''}">
       <td>${r.label}${oordeel(r)}</td>
       <td>${eurKort(r.kapitaal)}<span class="nu">≈ ${eurKort(r.kapitaalNu)} nu</span></td>
@@ -1198,12 +1209,12 @@ function drawWithdraw(){
     <div class="na-titel">En daarna? <span>kapitaal in geld van vandaag</span></div>
     <div class="na-chart">${naChart(c)}</div>
     <div class="chart-legend na-leg">
-      <span><i style="background:#7f8896"></i>voorzichtig</span>
-      <span><i style="background:#c6a15b"></i>verwacht</span>
-      <span><i style="background:#6b8fbe"></i>optimistisch${c.naAfgekapt?' (loopt verder op)':''}</span>
+      <span><i style="background:#7f8896"></i>voorzichtig${legendePct(c.rijen[0])}</span>
+      <span><i style="background:#c6a15b"></i>verwacht${legendePct(c.rijen[1])}</span>
+      <span><i style="background:#6b8fbe"></i>optimistisch${legendePct(c.rijen[2])}${c.naBoven?` (start boven de grafiek, ${eurKort(c.rijen[2].kapitaalNu)} nu)`:(c.naAfgekapt?' (loopt verder op)':'')}</span>
     </div>
     <div class="note">
-      Een <b>vlakke lijn</b> betekent dat je koopkracht gelijk blijft: je kan eeuwig doorgaan. Loopt ze omlaag naar nul, dan teer je in en zie je met de bol wanneer het geld op is. Stijgt ze, dan groeit je kapitaal ondanks de opnames nog door.
+      Een <b>vlakke lijn</b> betekent dat je koopkracht gelijk blijft: je kan eeuwig doorgaan. Loopt ze omlaag naar nul, dan teer je in en zie je met de bol wanneer het geld op is. Stijgt ze, dan groeit je kapitaal ondanks de opnames nog door. De percentages zeggen hoeveel meer of minder koopkracht er na ${NA_JAREN} jaar opnemen overblijft.
       <br><br>
       Blijf je onder het rendement min de inflatie, dan groeit je kapitaal mee met de inflatie en blijft de koopkracht ervan gelijk. Precies houdbaar is hier: <b>${houdbaar}</b>.
       ${v.houdbaar

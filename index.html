@@ -57,6 +57,7 @@ header .sync b{color:var(--paper);font-weight:500}
 .hero .pill{display:inline-block;padding:2px 9px;border-radius:20px;font-family:var(--mono);font-size:12.5px;margin-left:4px}
 .hero .pill.up{background:rgba(90,168,122,.14)}
 .hero .pill.down{background:rgba(207,107,91,.14)}
+.hero .sub.fees{font-size:11.5px;margin-top:4px}
 
 /* demo-banner */
 .demo-banner{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 14px;background:rgba(198,161,91,.10);border:1px solid rgba(198,161,91,.38);border-radius:12px;padding:12px 14px;margin:0 0 18px}
@@ -78,7 +79,7 @@ header .sync b{color:var(--paper);font-weight:500}
 .readout .ro-gain{font-size:12px;margin-left:7px}
 .readout .ro-gain.up{color:var(--up)}
 .readout .ro-gain.down{color:var(--down)}
-.chartwrap{position:relative;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
+.chartwrap{position:relative;margin:0 -4px;touch-action:none;-webkit-user-select:none;user-select:none;-webkit-tap-highlight-color:transparent}
 .chart-legend{display:flex;gap:16px;flex-wrap:wrap;margin:10px 2px 0;font-family:var(--mono);font-size:11.5px;color:var(--muted)}
 .chart-legend button{background:none;border:0;padding:0;display:inline-flex;align-items:center;gap:6px;color:inherit;font:inherit;cursor:pointer}
 .chart-legend button.off{opacity:.4}
@@ -109,12 +110,27 @@ header .sync b{color:var(--paper);font-weight:500}
 .withdraw .lead b{color:var(--paper);font-weight:500}
 .withdraw .note{color:var(--muted);font-size:11px;line-height:1.6;margin-top:11px;opacity:.9}
 .withdraw .note b{color:var(--paper);font-weight:500;opacity:1}
+.doel{margin:18px 0 0;border-top:1px solid var(--line);padding-top:13px}
+.doel .lead input{width:66px}
+.doel-btn{margin-top:10px;color:var(--brass);border-color:rgba(198,161,91,.45);padding:7px 12px;font-size:12px}
+.na-titel{margin:18px 2px 7px;font-size:12px;color:var(--paper)}
+.na-titel span{color:var(--muted);font-size:11px}
+.na-chart{margin:0 2px}
+.chart-legend.na-leg{margin:7px 2px 0;gap:14px}
+.chart-legend.na-leg span{display:inline-flex;align-items:center;gap:6px}
 svg{display:block;width:100%;height:auto}
 .proj-note{font-family:var(--mono);font-size:10.5px;color:var(--muted);font-weight:400;letter-spacing:.02em}
 .proj-controls{display:flex;flex-wrap:wrap;gap:9px 14px;margin:8px 2px 12px}
 .proj-controls label{font-size:12px;color:var(--muted);display:inline-flex;align-items:center;gap:6px}
 .proj-controls input{width:62px;background:var(--ink);border:1px solid var(--line);color:var(--paper);font-family:var(--mono);font-size:13px;padding:6px 8px;border-radius:8px}
 .proj-controls input:focus{outline:2px solid var(--brass);outline-offset:1px}
+.kosten{border:1px solid var(--line);border-radius:10px;padding:9px 11px;margin:0 2px 12px;background:rgba(255,255,255,.02)}
+.kosten.uit{opacity:.6}
+.k-rij{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--muted)}
+.k-rij b{color:var(--brass);font-family:var(--mono);font-weight:500}
+.k-btn{background:var(--ink3);border:1px solid var(--line);color:var(--muted);padding:4px 10px;border-radius:20px;font-size:11px;white-space:nowrap}
+.k-uitleg{color:var(--muted);font-size:11px;line-height:1.55;margin-top:6px;opacity:.85}
+.k-uitleg b{color:var(--paper);font-weight:500;opacity:1}
 
 /* section heads */
 .sec{display:flex;align-items:baseline;justify-content:space-between;margin:26px 4px 12px}
@@ -158,6 +174,9 @@ input[type=number],input[type=text]{
 input:focus{outline:2px solid var(--brass);outline-offset:1px}
 .rb-out{margin-top:10px;font-family:var(--mono);font-size:13px;line-height:1.9}
 .rb-out .row{display:flex;justify-content:space-between;border-top:1px dashed var(--line);padding-top:6px}
+.rb-out .row b{color:var(--brass);font-weight:500}
+.rb-out .rb-na{font-size:11px;color:var(--muted);text-align:right;line-height:1.4;margin:-4px 0 4px}
+.rb-out .rb-rest{color:var(--muted)}
 
 /* controls */
 .controls{display:flex;flex-wrap:wrap;gap:8px;margin:24px 0 8px}
@@ -282,9 +301,9 @@ input:focus{outline:2px solid var(--brass);outline-offset:1px}
 
 // Yahoo-tickers per ISIN (voor referentie / handmatige opzoeking).
 const META = {
-  'IE00B4L5Y983':{name:'iShares Core MSCI World',       symbol:'IWDA', yahoo:'IWDA.AS', order:1},
-  'IE00BCBJG560':{name:'SPDR MSCI World Small Cap',      symbol:'ZPRS', yahoo:'ZPRS.DE', order:2},
-  'IE00BKM4GZ66':{name:'iShares Core MSCI EM IMI',       symbol:'EMIM', yahoo:'EMIM.AS', order:3},
+  'IE00B4L5Y983':{name:'iShares Core MSCI World',       symbol:'IWDA', yahoo:'IWDA.AS', order:1, ter:0.20},
+  'IE00BCBJG560':{name:'SPDR MSCI World Small Cap',      symbol:'ZPRS', yahoo:'ZPRS.DE', order:2, ter:0.45},
+  'IE00BKM4GZ66':{name:'iShares Core MSCI EM IMI',       symbol:'EMIM', yahoo:'EMIM.AS', order:3, ter:0.18},
 };
 
 // ---- Referentie voor de vergelijkingslijn: "wat als alles in IWDA zat?"
@@ -374,6 +393,9 @@ let TARGETS = load(LS_TARGETS, null);
 let PROJ = load('pf_proj_v1', {ret:8, low:5, high:11, monthly:0, infl:2, opname:4});  // projectie-instellingen
 if(PROJ.infl==null)PROJ.infl=2;       // bestaande opgeslagen instellingen aanvullen
 if(PROJ.opname==null)PROJ.opname=4;
+if(PROJ.eind==null)PROJ.eind=2055;    // einde van de opbouwfase
+if(PROJ.doel==null)PROJ.doel=3000;    // gewenst maandbedrag later, in geld van nu
+function eindJaar(){const nu=new Date().getFullYear(),v=Math.round(Number(PROJ.eind));return (v>nu&&v<=2100)?v:2055;}
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
 function save(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
@@ -384,6 +406,7 @@ const $=id=>document.getElementById(id);
 const eur=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR'}).format(n||0);
 const eur0=n=>new Intl.NumberFormat('nl-BE',{style:'currency',currency:'EUR',maximumFractionDigits:0}).format(n||0);
 const nf1=new Intl.NumberFormat('nl-BE',{minimumFractionDigits:1,maximumFractionDigits:1});
+const nf2=new Intl.NumberFormat('nl-BE',{minimumFractionDigits:2,maximumFractionDigits:2});
 const pct=n=>(n>=0?'+':'')+nf1.format(n)+'%';
 const pctPlain=n=>nf1.format(n)+'%';
 const fmtDate=d=>new Date(d+'T00:00:00').toLocaleDateString('nl-BE',{day:'numeric',month:'short',year:'numeric'});
@@ -465,6 +488,26 @@ function enrich(){
   for(const p of pos)p.weight=(haveAll&&totVal>0)?(p.value/totVal)*100:(p.invested/totInv)*100;
   return {pos,totVal:haveAll?totVal:null,totInv,totFees,pl,plPct:pl!=null?(pl/totInv)*100:null,haveAll};
 }
+/* Gewogen lopende kosten van de hele portefeuille.
+   De TER van elk fonds wordt al doorlopend uit het fondsvermogen gehaald en zit
+   dus in de koers verwerkt — je ziet ze nooit als aparte afrekening. Ze is
+   daarom enkel zinvol als correctie op een projectie die met marktrendement
+   rekent, niet als post om historisch te tonen. */
+function gewogenTER(pos,totVal){
+  let som=0,gedekt=0,onbekend=[];
+  for(const p of pos){
+    const w=(p.value!=null&&totVal)?p.value/totVal:null;
+    const t=(META[p.isin]||{}).ter;
+    if(w==null)continue;
+    if(t==null){onbekend.push(p.symbol||p.isin);continue;}
+    som+=w*t;gedekt+=w;
+  }
+  if(gedekt<=0)return null;
+  // Kennen we niet alles, dan schalen we naar wat we wél weten in plaats van
+  // de rest stilzwijgend als gratis te behandelen.
+  return {ter:som/gedekt,gedekt:gedekt*100,onbekend};
+}
+
 function defaultTargets(pos,totInv){
   const t={};for(const p of pos)t[p.isin]=Math.round((p.invested/totInv)*100);
   return t;
@@ -498,6 +541,7 @@ function render(){
       ingelegd ${eur(e.totInv)}
       ${e.pl!=null?`<span class="pill ${plClass}">${e.pl>=0?'▲':'▼'} ${eur(Math.abs(e.pl))} · ${pct(e.plPct)}</span>`:''}
     </div>
+    ${e.totFees>0?`<div class="sub muted fees">transactiekosten ${eur(e.totFees)} · ${nf1.format(e.totFees/e.totInv*100)}% van je inleg${e.pl!=null?` · winst na kosten <span class="${e.pl-e.totFees>=0?'up':'down'}">${e.pl-e.totFees>=0?'+':'−'}${eur(Math.abs(e.pl-e.totFees))}</span>`:''}</div>`:''}
   </div>`;
 
   if(DEMO)html=`<div class="demo-banner">
@@ -542,7 +586,7 @@ function render(){
   }
   html+=`<div class="rb-input">
       <label>Nieuwe inleg</label>
-      <input type="number" id="rbAmount" placeholder="bv. 2000" inputmode="decimal">
+      <input type="text" id="rbAmount" placeholder="bv. 2000" inputmode="numeric">
       <button class="btn" id="rbTargets">Doelen aanpassen</button>
     </div>
     <div class="rb-out" id="rbOut"></div>
@@ -694,8 +738,29 @@ function jaarRendement(pts){
 }
 
 function niceNum(x){const mag=Math.pow(10,Math.floor(Math.log10(x)));const n=x/mag;const s=n<=1?1:n<=2?2:n<=2.5?2.5:n<=5?5:10;return s*mag;}
-function chartScale(maxv){const target=(maxv||1)*1.08;const step=niceNum(target/3);const top=Math.ceil(target/step)*step;const lines=[];for(let v=0;v<=top+1;v+=step)lines.push(v);return {top,lines};}
-function kEur(v){return v>=1000?'€'+Math.round(v/1000)+'k':'€'+Math.round(v);}
+/* Zo fijn mogelijke ronde stap (1, 2, 2,5 of 5 × een macht van tien) met hoogstens
+   maxN vakken: de as sluit dan nauw aan bij de data in plaats van een derde leeg te laten. */
+function niceStep(span,maxN){const mag=Math.pow(10,Math.floor(Math.log10((span||1)/maxN)));
+  for(const k of [1,2,2.5,5,10,20]){const st=k*mag;if(Math.ceil(span/st)<=maxN)return st;}return 20*mag;}
+function chartScale(maxv){const target=(maxv||1)*1.04;const step=niceStep(target,5);const top=Math.ceil(target/step)*step;const lines=[];for(let v=0;v<=top+step*1e-6;v+=step)lines.push(v);return {top,lines,step};}
+function kEur(v){if(v>=1e6)return '€'+String(Math.round(v/1e5)/10).replace('.',',')+'M';return v>=1000?'€'+Math.round(v/1000)+'k':'€'+Math.round(v);}
+/* Het meetpunt dat in de tijd het dichtst bij het midden ligt. Meetpunten liggen
+   niet altijd even ver uit elkaar (wekelijks, dan dagelijks), dus "het middelste
+   punt" kan vlak naast het laatste liggen en de labels over elkaar zetten. */
+function middenInTijd(pts){const t=d=>new Date(d+'T00:00:00').getTime();
+  const m=(t(pts[0].date)+t(pts[pts.length-1].date))/2;let b=pts[0],bd=Infinity;
+  for(const p of pts){const d=Math.abs(t(p.date)-m);if(d<bd){bd=d;b=p;}}return b;}
+/* Bereik dat niet bij nul hoeft te beginnen: zo kan een grafiek inzoomen. */
+function chartRange(lo,hi){
+  if(!(hi>lo))hi=lo+1;
+  const step=niceStep(hi-lo,4);
+  const bot=Math.max(Math.floor(lo/step)*step,0), top=Math.ceil(hi/step)*step;
+  const lines=[];for(let v=bot;v<=top+step*1e-6;v+=step)lines.push(v);
+  return {lo:bot,top,lines,step};
+}
+/* Aslabel met genoeg precisie: bij stappen onder €1.000 één decimaal, anders
+   zou je bij het inzoomen twee keer "€37k" onder elkaar krijgen. */
+function kEurAs(v,step){return (step&&step%1000!==0&&v>=1000&&v<1e6)?'€'+(v/1000).toFixed(1).replace('.',',')+'k':kEur(v);}
 
 function drawChart(){
   const wrap=$('chartWrap'),readout=$('chartReadout');
@@ -718,15 +783,35 @@ function drawChart(){
   const bench=SHOW_BENCH?benchSeries(pts):null;
   const benchAvailable=!!benchSeries(pts);
 
-  const W=700,H=280,PL=46,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  // viewBox op telefoonschaal: 400 eenheden ≈ de breedte op je scherm, dus
+  // opschriften van 12 zijn ook echt ±10 px en de grafiek wordt hoger.
+  const W=400,H=230,PR=8,PT=14,PB=24,plotH=H-PT-PB;
   const t0=new Date(pts[0].date+'T00:00:00').getTime();
   const t1=new Date(pts[pts.length-1].date+'T00:00:00').getTime();
   const invVals=pts.map(p=>p.invested);
   const valVals=pts.filter(p=>p.value!=null).map(p=>p.value);
   const benchVals=bench?bench.filter(v=>v!=null):[];
-  const sc=chartScale(Math.max(...invVals,...(valVals.length?valVals:[0]),...(benchVals.length?benchVals:[0])));
+  // Inzoomen. Bij 1M/6M/1J kijk je naar hoe je waarde beweegt: de as volgt de
+  // waarde (en IWDA) en de ingelegd-lijn mag onder de rand verdwijnen. Bij 5J en
+  // Max vertelt de grafiek het hele verhaal en start ze bij nul, tenzij alles
+  // zo dicht bij elkaar ligt dat nul enkel lege ruimte zou geven.
+  const kern=[...valVals,...benchVals];
+  const alles=[...invVals,...kern];
+  let sc;
+  if(['1M','6M','1J'].includes(CHART_PERIOD)&&kern.length){
+    const mn=Math.min(...kern),mx=Math.max(...kern),pad=Math.max((mx-mn)*0.12,mx*0.004);
+    sc=chartRange(mn-pad,mx+pad);
+  }else{
+    const mn=Math.min(...alles),mx=Math.max(...alles);
+    sc=mn>mx*0.35?chartRange(mn-(mx-mn)*0.1,mx+(mx-mn)*0.06):{lo:0,...chartScale(mx)};
+  }
+  const lo=sc.lo||0;
+  const binnen=v=>v>=lo-1e-9&&v<=sc.top+1e-9;
+  const invUit=!invVals.some(binnen);
+  // linkermarge groeit mee met het langste aslabel ("€42,5k" is breder dan "€40k")
+  const PL=Math.max(36,Math.ceil(10+7.3*Math.max(...sc.lines.map(v=>kEurAs(v,sc.step).length)))),plotW=W-PL-PR;
   const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
-  const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
+  const Y=v=>PT+plotH-((v-lo)/((sc.top-lo)||1))*plotH;
   pts.forEach((p,i)=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._iy=Y(p.invested);p._vy=p.value!=null?Y(p.value):null;
     p._b=bench?bench[i]:null;p._by=(p._b!=null)?Y(p._b):null;});
   let benchPath='';
@@ -736,28 +821,31 @@ function drawChart(){
   const vpts=pts.filter(p=>p.value!=null);
   let valPath='',valArea='';
   vpts.forEach((p,i)=>{valPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._vy.toFixed(1);});
-  if(vpts.length)valArea=valPath+`L${vpts[vpts.length-1]._x.toFixed(1)},${Y(0).toFixed(1)}L${vpts[0]._x.toFixed(1)},${Y(0).toFixed(1)}Z`;
+  if(vpts.length)valArea=valPath+`L${vpts[vpts.length-1]._x.toFixed(1)},${Y(lo).toFixed(1)}L${vpts[0]._x.toFixed(1)},${Y(lo).toFixed(1)}Z`;
   let invPath='';pts.forEach((p,i)=>{invPath+=(i?'L':'M')+p._x.toFixed(1)+','+p._iy.toFixed(1);});
 
   let grid='',ylab='';
   sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
     grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36" stroke-width="1"/>`;
-    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+    ylab+=`<text x="${PL-6}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">${kEurAs(v,sc.step)}</text>`;});
   const spanDagen=daysBetween(pts[0].date,pts[pts.length-1].date);
   const xOpm=spanDagen<120?{day:'numeric',month:'short'}:{month:'short',year:'2-digit'};
-  const xd=[pts[0],pts[Math.floor(pts.length/2)],pts[pts.length-1]];
+  const xd=[pts[0],middenInTijd(pts),pts[pts.length-1]];
   let xlab='';xd.forEach((p,i)=>{const a=i===0?'start':(i===2?'end':'middle');
-    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${new Date(p.date+'T00:00:00').toLocaleDateString('nl-BE',xOpm)}</text>`;});
+    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-8}" text-anchor="${a}" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">${new Date(p.date+'T00:00:00').toLocaleDateString('nl-BE',xOpm)}</text>`;});
 
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="waardeverloop">
     <defs><linearGradient id="valgrad" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#c6a15b" stop-opacity="0.30"/>
-      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/></linearGradient></defs>
+      <stop offset="1" stop-color="#c6a15b" stop-opacity="0"/></linearGradient>
+      <clipPath id="plotClip"><rect x="${PL}" y="${PT-2}" width="${plotW}" height="${plotH+4}"/></clipPath></defs>
     ${grid}
+    <g clip-path="url(#plotClip)">
     ${valArea?`<path d="${valArea}" fill="url(#valgrad)"/>`:''}
     <path d="${invPath}" fill="none" stroke="#7f8896" stroke-width="1.5" stroke-dasharray="5 4" stroke-linejoin="round"/>
     ${benchPath?`<path d="${benchPath}" fill="none" stroke="#6b8fbe" stroke-width="1.6" stroke-dasharray="1 3.5" stroke-linecap="round"/>`:''}
-    ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.4" stroke-linejoin="round" stroke-linecap="round"/>`:''}
+    ${valPath?`<path d="${valPath}" fill="none" stroke="#c6a15b" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`:''}
+    </g>
     ${ylab}${xlab}
     <g id="cross" style="display:none">
       <line id="crossLine" y1="${PT}" y2="${PT+plotH}" stroke="#ece6da" stroke-opacity="0.4" stroke-width="1"/>
@@ -782,7 +870,7 @@ function drawChart(){
   if(legEl){
     legEl.innerHTML=`
       <button type="button" disabled style="cursor:default"><i style="background:#c6a15b"></i>waarde</button>
-      <button type="button" disabled style="cursor:default"><i style="background:#7f8896"></i>ingelegd</button>
+      <button type="button" disabled style="cursor:default"><i style="background:#7f8896"></i>ingelegd${invUit?' (onder de grafiek)':''}</button>
       ${benchAvailable?`<button type="button" id="benchToggle" class="${SHOW_BENCH?'':'off'}"><i style="background:#6b8fbe"></i>${BENCH_NAAM}</button>`:''}`;
     const bt=$('benchToggle');
     if(bt)bt.onclick=()=>{SHOW_BENCH=!SHOW_BENCH;save('pf_bench_v1',SHOW_BENCH);drawChart();};
@@ -830,7 +918,7 @@ function drawChart(){
     let best=pts[0],bd=Infinity;for(const p of pts){const d=Math.abs(p._x-xv);if(d<bd){bd=d;best=p;}}return best;};
   const move=clientX=>{const p=nearest(clientX);cross.style.display='';
     cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);
-    ci.setAttribute('cx',p._x);ci.setAttribute('cy',p._iy);
+    ci.setAttribute('cx',p._x);ci.setAttribute('cy',p._iy);ci.style.display=binnen(p.invested)?'':'none';
     if(p._vy!=null){cv.style.display='';cv.setAttribute('cx',p._x);cv.setAttribute('cy',p._vy);}else cv.style.display='none';
     if(p._by!=null){cb.style.display='';cb.setAttribute('cx',p._x);cb.setAttribute('cy',p._by);}else cb.style.display='none';
     setReadout(p);};
@@ -841,34 +929,62 @@ function drawChart(){
 }
 
 /* ============================================================
-   PROJECTIE tot 2055 (schatting op basis van een verondersteld
+   PROJECTIE tot het eindjaar (schatting op basis van een verondersteld
    jaarrendement + optionele maandinleg; met pessimistisch/optimistisch
    band). Nadrukkelijk een projectie, geen voorspelling.
    ============================================================ */
 function renderProjection(){
   if(TX.length===0)return '';
   return `<div class="chartcard">
-    <h3>Projectie tot 2055 <span class="proj-note">· schatting, geen voorspelling</span></h3>
+    <h3>Projectie tot <span id="projJaar">${eindJaar()}</span> <span class="proj-note">· schatting, geen voorspelling</span></h3>
     <div class="proj-controls">
       <label>Rendement <input id="projRet" type="number" step="0.5" inputmode="decimal" value="${PROJ.ret}">%</label>
       <label>Pessimistisch <input id="projLow" type="number" step="0.5" inputmode="decimal" value="${PROJ.low}">%</label>
       <label>Optimistisch <input id="projHigh" type="number" step="0.5" inputmode="decimal" value="${PROJ.high}">%</label>
       <label>Maandinleg <input id="projMon" type="number" step="50" min="0" inputmode="decimal" value="${PROJ.monthly}">€</label>
+      <label>Tot <input id="projEind" type="number" step="1" inputmode="numeric" value="${eindJaar()}"></label>
     </div>
+    <div id="kostenWrap">${renderKosten()}</div>
     <div class="readout" id="projReadout"></div>
     <div class="chartwrap" id="projWrap"></div>
     <div class="withdraw" id="projWithdraw"></div>
   </div>`;
 }
-function projectSeries(){
+/* Toont de gewogen fondskosten die de app zelf uit je posities berekent. */
+function renderKosten(){
+  const e=enrich();
+  const g=gewogenTER(e.pos,e.totVal);
+  if(!g)return '';
+  const uit=!!PROJ.kosten;
+  const detail=e.pos.filter(p=>(META[p.isin]||{}).ter!=null&&p.value!=null)
+    .map(p=>`${p.symbol} ${nf2.format((META[p.isin]||{}).ter)}%`).join(' · ');
+  const waarschuwing=g.onbekend.length
+    ? ` <span style="color:var(--down)">Voor ${g.onbekend.join(', ')} ken ik de kosten niet; berekend over de overige ${Math.round(g.gedekt)}%.</span>`
+    : '';
+  return `<div class="kosten ${uit?'uit':''}">
+    <div class="k-rij">
+      <span>Lopende kosten <b>${nf2.format(g.ter)}%</b> per jaar</span>
+      <button type="button" id="kostToggle" class="k-btn">${uit?'meerekenen':'niet meerekenen'}</button>
+    </div>
+    <div class="k-uitleg">Gewogen naar je huidige verdeling: ${detail}.${waarschuwing}
+      ${uit?'Nu <b>niet</b> verrekend: de projectie gebruikt je rendement zoals ingevuld.'
+           :`De rendementen hierboven gelden als marktrendement; de projectie rekent met ${nf1.format((Number(PROJ.ret)||0)-g.ter)}% netto.`}
+      Deze kosten zitten al in de koers verwerkt, je betaalt ze nooit apart.</div>
+  </div>`;
+}
+
+function projectSeries(mOverride){
   const e=enrich();
   const V0=e.totVal!=null?e.totVal:e.totInv;
   const today=new Date();today.setHours(0,0,0,0);
+  // De ingevulde rendementen zijn marktrendementen; de fondskosten gaan eraf.
+  const k=PROJ.kosten?0:((gewogenTER(e.pos,e.totVal)||{}).ter||0);
+  const netto=x=>Math.max((Number(x)||0)-k,-99);
   // maandgroei = jaarrendement^(1/12), zodat 12 maanden exact het jaarrendement geven
-  const mrE=Math.pow(1+PROJ.ret/100,1/12),mrL=Math.pow(1+PROJ.low/100,1/12),mrH=Math.pow(1+PROJ.high/100,1/12),m=PROJ.monthly||0;
+  const mrE=Math.pow(1+netto(PROJ.ret)/100,1/12),mrL=Math.pow(1+netto(PROJ.low)/100,1/12),mrH=Math.pow(1+netto(PROJ.high)/100,1/12),m=(mOverride!=null?mOverride:(PROJ.monthly||0));
   let vE=V0,vL=V0,vH=V0,inv=e.totInv;
   const pts=[{t:today.getTime(),low:V0,exp:V0,high:V0,invested:inv}];
-  const target=new Date(2055,11,1).getTime();
+  const target=new Date(eindJaar(),11,1).getTime();
   const d=new Date(today);
   let guard=0;
   while(d.getTime()<target && guard++<600){
@@ -884,6 +1000,8 @@ function projectSeries(){
    koopkracht. Alles wordt daarnaast omgerekend naar geld van vandaag. */
 const eurKort=n=>n>=1e6?'€ '+nf1.format(n/1e6)+'M':(n>=1000?'€ '+Math.round(n/1000)+'k':eur0(n));
 
+const NA_JAREN=40;   // hoe ver we ná de einddatum doorrekenen
+
 /* Hoe lang gaat het kapitaal mee als je maandelijks opneemt en dat bedrag
    jaarlijks met de inflatie verhoogt? null = langer dan een eeuw. */
 function jarenTotLeeg(kapitaal,r,infl,maand){
@@ -897,15 +1015,34 @@ function jarenTotLeeg(kapitaal,r,infl,maand){
   return null;
 }
 
+/* Verloop van het kapitaal ná de einddatum, uitgedrukt in geld van vandaag.
+   In geld van nu is een vlakke lijn precies "koopkracht blijft gelijk"; in
+   nominale euro's zou zelfs een intering nog stijgend lijken. */
+function opnameVerloop(kapitaal,r,infl,maand,jaren,naarNu){
+  const g=Math.pow(1+r,1/12);
+  const pad=[kapitaal/naarNu];
+  let V=kapitaal,m=maand;
+  for(let j=0;j<jaren;j++){
+    for(let k=0;k<12;k++){V=V*g-m;if(V<=0){V=0;break;}}
+    m*=(1+infl);
+    pad.push(Math.max(V,0)/(naarNu*Math.pow(1+infl,j+1)));
+    if(V<=0){for(let x=j+1;x<jaren;x++)pad.push(0);break;}
+  }
+  return pad;
+}
+
 function opnameCijfers(){
   const proj=projectSeries();
   const eind=proj[proj.length-1];
   const jaren=Math.max((eind.t-Date.now())/(365.25*86400000),0);
   const infl=(Number(PROJ.infl)||0)/100;
   const opname=Math.max(Number(PROJ.opname)||0,0)/100;
-  const naarNu=Math.pow(1+infl,jaren);          // deler om 2055-euro's naar euro's van nu te brengen
+  const naarNu=Math.pow(1+infl,jaren);          // deler om euro's van het eindjaar naar euro's van nu te brengen
+  // Ook ná je pensioen blijven de fondskosten lopen, dus dezelfde correctie.
+  const e=enrich();
+  const kost=PROJ.kosten?0:((gewogenTER(e.pos,e.totVal)||{}).ter||0);
   const rij=(label,rendement,kapitaal)=>{
-    const r=(Number(rendement)||0)/100;
+    const r=Math.max((Number(rendement)||0)-kost,-99)/100;
     // Je neemt maandelijks op, dus dat geld rendeert de rest van het jaar niet meer.
     // S corrigeert daarvoor bij het bepalen van het hoogste houdbare percentage.
     const g=Math.pow(1+r,1/12);
@@ -913,12 +1050,89 @@ function opnameCijfers(){
     const maxPct=Math.max((r-infl)/S*1200,0);   // hierboven teert je kapitaal in
     const perMaand=kapitaal*opname/12;
     return {label,kapitaal,kapitaalNu:kapitaal/naarNu,perMaand,perMaandNu:perMaand/naarNu,
-            maxPct,houdbaar:opname*100<=maxPct+1e-9,jarenLeeg:jarenTotLeeg(kapitaal,r,infl,perMaand)};
+            maxPct,houdbaar:opname*100<=maxPct+1e-9,jarenLeeg:jarenTotLeeg(kapitaal,r,infl,perMaand),
+            pad:opnameVerloop(kapitaal,r,infl,perMaand,NA_JAREN,naarNu)};
   };
   return {
     jaartal:new Date(eind.t).getFullYear(), jaren, infl, naarNu, opnamePct:opname*100,
     rijen:[rij('voorzichtig',PROJ.low,eind.low),rij('verwacht',PROJ.ret,eind.exp),rij('optimistisch',PROJ.high,eind.high)]
   };
+}
+
+/* Tekent wat er ná de einddatum met je kapitaal gebeurt, in geld van vandaag.
+   Vlak = koopkracht blijft gelijk. Omlaag naar nul = je teert in. */
+function naChart(c){
+  const W=400,H=210,PL=44,PR=8,PT=14,PB=24,pw=W-PL-PR,ph=H-PT-PB;
+  // Schalen op voorzichtig en verwacht: het optimistische pad schiet anders zo
+  // ver op dat de twee lijnen die ertoe doen plat tegen de bodem liggen.
+  const basis=[...c.rijen[0].pad,...c.rijen[1].pad,c.rijen[1].kapitaalNu*1.25];
+  const sc=chartScale(Math.max(...basis,1));
+  c.naAfgekapt=Math.max(...c.rijen[2].pad)>sc.top;
+  const X=i=>PL+(i/NA_JAREN)*pw;
+  const Y=v=>PT+ph-(v/(sc.top||1))*ph;
+  const kleur=['#7f8896','#c6a15b','#6b8fbe'];
+
+  let paden='';
+  c.rijen.forEach((r,i)=>{
+    const d=r.pad.map((v,j)=>(j?'L':'M')+X(j).toFixed(1)+','+Y(v).toFixed(1)).join('');
+    paden+=`<path d="${d}" fill="none" stroke="${kleur[i]}" stroke-width="${i===1?2.4:1.5}"
+      ${i===1?'':'stroke-dasharray="4 3"'} stroke-linejoin="round" opacity="${i===1?1:.85}"/>`;
+    // markeer het punt waar het geld op is
+    if(r.jarenLeeg!=null&&r.jarenLeeg<=NA_JAREN)
+      paden+=`<circle cx="${X(r.jarenLeeg).toFixed(1)}" cy="${Y(0).toFixed(1)}" r="4" fill="#181c25" stroke="${kleur[i]}" stroke-width="2"/>`;
+  });
+
+  // referentie: het startniveau van de koopkracht
+  const start=c.rijen[1].kapitaalNu;
+  const nul=`<line x1="${PL}" y1="${Y(0)}" x2="${W-PR}" y2="${Y(0)}" stroke="#2b3140" stroke-width="1"/>`;
+  const ref=`<line x1="${PL}" y1="${Y(start).toFixed(1)}" x2="${W-PR}" y2="${Y(start).toFixed(1)}"
+    stroke="#c6a15b" stroke-width="1" stroke-dasharray="2 5" opacity=".45"/>`;
+
+  let ylab='';sc.lines.forEach(v=>{ylab+=`<line x1="${PL}" y1="${Y(v).toFixed(1)}" x2="${W-PR}" y2="${Y(v).toFixed(1)}" stroke="#2b3140" stroke-width="1" opacity=".5"/>
+    <text x="${PL-7}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+  let xlab='';[0,10,20,30,40].forEach(j=>{const a=j===0?'start':(j===40?'end':'middle');
+    xlab+=`<text x="${X(j).toFixed(1)}" y="${H-8}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${c.jaartal+j}</text>`;});
+
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="kapitaal na het eindjaar">
+    <defs><clipPath id="naClip"><rect x="${PL}" y="${PT-3}" width="${pw}" height="${ph+6}"/></clipPath></defs>
+    ${ylab}${ref}<g clip-path="url(#naClip)">${paden}</g>${nul}${xlab}</svg>`;
+}
+
+/* Bedrag uit een invulveld: "3000", "3.000" en "3 000" betekenen allemaal drieduizend. */
+function leesBedrag(t){const v=Number(String(t).replace(/[\s.]/g,'').replace(',','.'));return (isFinite(v)&&v>=0)?v:null;}
+
+/* Omgekeerd rekenen: hoeveel moet je maandelijks storten om later een gewenst
+   maandbedrag (in geld van nu) te kunnen opnemen aan je gekozen opnamepercentage?
+   De eindwaarde van de projectie is lineair in de maandinleg, dus twee proefruns
+   (inleg 0 en inleg 1) geven het exacte antwoord binnen hetzelfde model — met
+   dezelfde kosten, hetzelfde eindjaar en dezelfde maandgroei. */
+function benodigdeInleg(doelNu,c){
+  const opn=c.opnamePct/100;
+  if(!(opn>0)||!(doelNu>0))return null;
+  const K=doelNu*c.naarNu*12/opn;
+  const e0=projectSeries(0).slice(-1)[0], e1=projectSeries(1).slice(-1)[0];
+  const nodig=k=>{const A=e1[k]-e0[k];return A>0?Math.max((K-e0[k])/A,0):null;};
+  return {K,verwacht:nodig('exp'),voorzichtig:nodig('low')};
+}
+
+function renderDoel(c){
+  const b=benodigdeInleg(Number(PROJ.doel)||0,c);
+  const rond=x=>Math.ceil(x/10)*10;
+  const cel=x=>x==null?'—':(x<=0?'niets extra':eur0(rond(x)));
+  const verw=b&&b.verwacht!=null?rond(b.verwacht):null;
+  const nu=Number(PROJ.monthly)||0;
+  return `<div class="doel">
+    <h4>Hoeveel moet je daarvoor storten?</h4>
+    <div class="lead">Wil je later <input id="wdDoel" type="text" inputmode="numeric" value="${Math.round(PROJ.doel)}"> € per maand in geld van nu, bij je opname van ${nf1.format(c.opnamePct)}%${b?`, dan heb je in ${c.jaartal} <b>${eurKort(b.K)}</b> nodig`:''}.</div>
+    ${b?`<table class="wd">
+      <tbody>
+        <tr class="hoofd"><td>verwacht</td><td class="maand">${cel(b.verwacht)}<span class="nu">per maand</span></td></tr>
+        <tr><td>voorzichtig</td><td>${cel(b.voorzichtig)}<span class="nu">per maand</span></td></tr>
+        <tr><td>je stort nu</td><td>${eur0(nu)}<span class="nu">per maand</span></td></tr>
+      </tbody></table>
+      ${verw!=null&&verw>0&&verw!==nu?`<button type="button" class="k-btn doel-btn" id="doelOvernemen" data-m="${verw}">${eur0(verw)} overnemen als maandinleg</button>`:''}`
+     :`<div class="note">Zet een opnamepercentage boven 0% om dit te berekenen.</div>`}
+  </div>`;
 }
 
 function drawWithdraw(){
@@ -951,7 +1165,17 @@ function drawWithdraw(){
       </tr></thead>
       <tbody>${rijen}</tbody>
     </table>
+    ${renderDoel(c)}
+    <div class="na-titel">En daarna? <span>kapitaal in geld van vandaag</span></div>
+    <div class="na-chart">${naChart(c)}</div>
+    <div class="chart-legend na-leg">
+      <span><i style="background:#7f8896"></i>voorzichtig</span>
+      <span><i style="background:#c6a15b"></i>verwacht</span>
+      <span><i style="background:#6b8fbe"></i>optimistisch${c.naAfgekapt?' (loopt verder op)':''}</span>
+    </div>
     <div class="note">
+      Een <b>vlakke lijn</b> betekent dat je koopkracht gelijk blijft: je kan eeuwig doorgaan. Loopt ze omlaag naar nul, dan teer je in en zie je met de bol wanneer het geld op is. Stijgt ze, dan groeit je kapitaal ondanks de opnames nog door.
+      <br><br>
       Blijf je onder het rendement min de inflatie, dan groeit je kapitaal mee met de inflatie en blijft de koopkracht ervan gelijk. Precies houdbaar is hier: <b>${houdbaar}</b>.
       ${v.houdbaar
         ? `Met ${nf1.format(c.opnamePct)}% zit je in het verwachte scenario dus veilig: <b>${eur0(v.perMaand)}</b> per maand, koopkracht van <b>${eur0(v.perMaandNu)}</b> in geld van nu.`
@@ -961,11 +1185,20 @@ function drawWithdraw(){
     </div>`;
 
   // Komma of punt mag allebei; een half getypt veld ("3,") laat de vorige waarde staan.
+  // Inflatie werkt ook door in de uitlezing van de projectiegrafiek, dus die mee verversen.
   const bindPct=(id,key)=>{const n=$(id);if(!n)return;
     n.oninput=()=>{const v=parseFloat(String(n.value).replace(',','.'));
-      if(!isNaN(v)&&v>=0){PROJ[key]=v;savePROJ();drawWithdraw();}};
-    n.onblur=()=>drawWithdraw();};   // netjes herformatteren zodra je klaar bent
+      if(!isNaN(v)&&v>=0){PROJ[key]=v;savePROJ();if(key==='infl')drawProjection();else drawWithdraw();}};
+    // Bij het verlaten enkel het veld zelf netjes zetten — het blok herbouwen zou
+    // het veld wegnemen waar je net op tikte.
+    n.onblur=()=>{n.value=nf1.format(PROJ[key]);};};
   bindPct('wdOpn','opname');bindPct('wdInfl','infl');
+  const dn=$('wdDoel');
+  if(dn){dn.oninput=()=>{const v=leesBedrag(dn.value);if(v!=null){PROJ.doel=v;savePROJ();drawWithdraw();}};
+    dn.onblur=()=>{dn.value=Math.round(PROJ.doel);};}
+  const ov=$('doelOvernemen');
+  if(ov)ov.onclick=()=>{PROJ.monthly=Number(ov.dataset.m)||0;savePROJ();
+    const pm=$('projMon');if(pm)pm.value=PROJ.monthly;drawProjection();};
 
   if(focusId){const n=el.querySelector('#'+focusId);
     if(n){n.focus();try{n.setSelectionRange(focusPos,focusPos);}catch(e){}}}
@@ -974,8 +1207,17 @@ function drawWithdraw(){
 function drawProjection(){
   const wrap=$('projWrap'),readout=$('projReadout');
   if(!wrap)return;
-  const bind=(id,key)=>{const el=$(id);if(el)el.oninput=()=>{const v=Number(el.value);if(!isNaN(v)){PROJ[key]=v;savePROJ();drawProjection();}};};
+  const bind=(id,key)=>{const el=$(id);if(el)el.oninput=()=>{const v=Number(el.value);if(!isNaN(v)){PROJ[key]=v;savePROJ();refreshKosten();drawProjection();}};};
   bind('projRet','ret');bind('projLow','low');bind('projHigh','high');bind('projMon','monthly');
+  // Enkel dit blok en de grafiek verversen — een volledige render() springt op iPhone naar boven.
+  function refreshKosten(){const kw=$('kostenWrap');if(!kw)return;kw.innerHTML=renderKosten();
+    const kt=$('kostToggle');if(kt)kt.onclick=()=>{PROJ.kosten=!PROJ.kosten;savePROJ();refreshKosten();drawProjection();};}
+  if(!$('kostToggle')||!$('kostToggle').onclick)refreshKosten();
+  // Eindjaar: een half getypt jaartal ("20") negeren we, pas een geldig jaar telt.
+  const pe=$('projEind');
+  if(pe){pe.oninput=()=>{const v=Math.round(Number(pe.value)),nu=new Date().getFullYear();
+      if(v>nu&&v<=2100){PROJ.eind=v;savePROJ();const t=$('projJaar');if(t)t.textContent=v;drawProjection();}};
+    pe.onblur=()=>{pe.value=eindJaar();};}
   drawWithdraw();
 
   const hs=buildChartSeries();
@@ -984,10 +1226,14 @@ function drawProjection(){
   const hist=hs?hs.points.filter(p=>p.value!=null).map(p=>({t:new Date(p.date+'T00:00:00').getTime(),v:p.value,inv:p.invested})):[];
   const histInv=hs?hs.points.map(p=>({t:new Date(p.date+'T00:00:00').getTime(),inv:p.invested})):[];
 
-  const W=700,H=270,PL=48,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  const W=400,H=230,PL=44,PR=8,PT=14,PB=24,plotW=W-PL-PR,plotH=H-PT-PB;
   const t0=hist.length?hist[0].t:tT, t1=proj[proj.length-1].t;
-  const allV=[...hist.map(p=>p.v),...histInv.map(p=>p.inv),...proj.map(p=>p.high),...proj.map(p=>p.invested)];
+  // Schalen op het verwachte scenario (met ruimte erboven), niet op de bovenkant
+  // van de optimistische band: die zou de verwachte lijn anders plat drukken.
+  const eind=proj[proj.length-1];
+  const allV=[...hist.map(p=>p.v),...histInv.map(p=>p.inv),...proj.map(p=>p.invested),eind.low,eind.exp*1.35];
   const sc=chartScale(Math.max(...allV,1));
+  const bandAfgekapt=eind.high>sc.top;
   const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
   const Y=v=>PT+plotH-(v/(sc.top||1))*plotH;
 
@@ -1005,19 +1251,21 @@ function drawProjection(){
   let grid='',ylab='';
   sc.lines.forEach(v=>{const y=Y(v).toFixed(1);
     grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36"/>`;
-    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
+    ylab+=`<text x="${PL-6}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">${kEur(v)}</text>`;});
   // x-labels: enkele jaartallen
-  const y0=new Date(t0).getFullYear(),yN=2055;const years=[];for(let y=Math.ceil(y0/10)*10;y<=yN;y+=10)years.push(y);
+  const y0=new Date(t0).getFullYear(),yN=eindJaar();const years=[];for(let y=Math.ceil(y0/10)*10;y<=yN;y+=10)years.push(y);
   if(years[0]>y0+1)years.unshift(y0);
   let xlab='';years.forEach(y=>{const x=X(new Date(y,0,1).getTime());if(x<PL-2||x>W)return;
-    xlab+=`<text x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${y}</text>`;});
+    xlab+=`<text x="${x.toFixed(1)}" y="${H-9}" text-anchor="middle" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">${y}</text>`;});
   const xToday=X(tT).toFixed(1);
 
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="projectie">
+    <defs><clipPath id="projClip"><rect x="${PL}" y="${PT-2}" width="${plotW}" height="${plotH+4}"/></clipPath></defs>
     ${grid}
-    <path d="${band}" fill="rgba(198,161,91,.12)" stroke="none"/>
+    <g clip-path="url(#projClip)"><path d="${band}" fill="rgba(198,161,91,.12)" stroke="none"/></g>
+    ${bandAfgekapt?`<text x="${PL+6}" y="${PT+12}" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">↑ optimistisch tot ${kEur(eind.high)}</text>`:''}
     <line x1="${xToday}" y1="${PT}" x2="${xToday}" y2="${PT+plotH}" stroke="#3a4152" stroke-dasharray="3 3"/>
-    <text x="${xToday}" y="${PT-4}" text-anchor="middle" font-size="10" fill="#8b93a3" font-family="IBM Plex Mono">nu</text>
+    <text x="${xToday}" y="${PT-4}" text-anchor="middle" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">nu</text>
     <path d="${invLine}" fill="none" stroke="#7f8896" stroke-width="1.3" stroke-dasharray="5 4"/>
     <path d="${expLine}" fill="none" stroke="#c6a15b" stroke-width="1.8" stroke-dasharray="6 4"/>
     ${histLine?`<path d="${histLine}" fill="none" stroke="#c6a15b" stroke-width="2.4" stroke-linejoin="round"/>`:''}
@@ -1033,17 +1281,21 @@ function drawProjection(){
                ...proj.filter(p=>p.t>tT).map(p=>({t:p.t,kind:'p',exp:p.exp,low:p.low,high:p.high,inv:p.invested}))]
                .sort((a,b)=>a.t-b.t);
   scrub.forEach(p=>{p._x=X(p.t);p._y=Y(p.kind==='h'?p.v:p.exp);});
+  // Een bedrag in jaar X omgerekend naar koopkracht van vandaag.
+  const inflJ=(Number(PROJ.infl)||0)/100;
+  const inGeldVanNu=(t,v)=>v/Math.pow(1+inflJ,Math.max((t-tT)/(365.25*86400000),0));
   const setR=p=>{
     if(p.kind==='h'){readout.innerHTML=`<span class="ro-date">${fmtDate(new Date(p.t).toISOString().slice(0,10))}</span>
       <span class="ro-item"><i style="background:#c6a15b"></i><span>${eur(p.v)}</span></span>
       <span class="ro-item"><i style="background:#7f8896"></i><span class="lbl">ingelegd</span><span>${eur(p.inv)}</span></span>`;}
     else{readout.innerHTML=`<span class="ro-date">${new Date(p.t).getFullYear()}</span>
-      <span class="ro-item"><i style="background:#c6a15b"></i><span>${eur(p.exp)}</span></span>
+      <span class="ro-item"><i style="background:#c6a15b"></i><span>${eur0(p.exp)}</span></span>
+      <span class="ro-item"><span class="lbl">in geld van nu</span><span>${eur0(inGeldVanNu(p.t,p.exp))}</span></span>
       <span class="ro-item"><span class="lbl">bandbreedte</span><span>${eur0(p.low)}–${eur0(p.high)}</span></span>
       <span class="ro-item"><span class="lbl">ingelegd</span><span>${eur(p.inv)}</span></span>`;}
   };
   const end=pts=>{const last=scrub[scrub.length-1];setR(last);};
-  setR(scrub[scrub.length-1]);   // standaard: 2055
+  setR(scrub[scrub.length-1]);   // standaard: het eindjaar
   const svg=wrap.querySelector('svg'),cr=svg.querySelector('#pcross'),cl=svg.querySelector('#pcl'),ce=svg.querySelector('#pce');
   const nearest=cx=>{const r=svg.getBoundingClientRect();const xv=((cx-r.left)/r.width)*W;let b=scrub[0],bd=Infinity;for(const p of scrub){const d=Math.abs(p._x-xv);if(d<bd){bd=d;b=p;}}return b;};
   const move=cx=>{const p=nearest(cx);cr.style.display='';cl.setAttribute('x1',p._x);cl.setAttribute('x2',p._x);ce.setAttribute('cx',p._x);ce.setAttribute('cy',p._y);setR(p);};
@@ -1093,11 +1345,13 @@ function drawFundChart(){
   const wrap=$('detailWrap'),readout=$('detailReadout');
   const pts=fundSeries();
   if(pts.length<2){wrap.innerHTML='<div class="muted" style="padding:22px 4px;font-size:13px">Nog te weinig koershistorie voor deze periode.</div>';readout.innerHTML='';return;}
-  const W=700,H=250,PL=46,PR=12,PT=16,PB=28,plotW=W-PL-PR,plotH=H-PT-PB;
+  const W=400,H=220,PL=44,PR=8,PT=14,PB=24,plotW=W-PL-PR,plotH=H-PT-PB;
   const t0=new Date(pts[0].date+'T00:00:00').getTime(),t1=new Date(pts[pts.length-1].date+'T00:00:00').getTime();
   const prices=pts.map(p=>p.price);
   let lo=Math.min(...prices),hi=Math.max(...prices);
-  const pad=(hi-lo)*0.12||hi*0.02; lo-=pad; hi+=pad;
+  const pad=(hi-lo)*0.08||hi*0.02;
+  // ronde asgetallen (€100, €110, …) in plaats van het toevallige minimum
+  const fr=chartRange(lo-pad,hi+pad); lo=fr.lo; hi=fr.top;
   const X=t=>PL+((t-t0)/((t1-t0)||1))*plotW;
   const Y=v=>PT+plotH-((v-lo)/((hi-lo)||1))*plotH;
   pts.forEach(p=>{p._x=X(new Date(p.date+'T00:00:00').getTime());p._y=Y(p.price);});
@@ -1106,12 +1360,12 @@ function drawFundChart(){
   let line='';pts.forEach((p,i)=>{line+=(i?'L':'M')+p._x.toFixed(1)+','+p._y.toFixed(1);});
   const area=line+`L${pts[pts.length-1]._x.toFixed(1)},${Y(lo).toFixed(1)}L${pts[0]._x.toFixed(1)},${Y(lo).toFixed(1)}Z`;
   let grid='',ylab='';
-  [0,.5,1].forEach(f=>{const v=lo+(hi-lo)*f,y=Y(v).toFixed(1);
+  fr.lines.forEach(v=>{const y=Y(v).toFixed(1);
     grid+=`<line x1="${PL}" y1="${y}" x2="${W-PR}" y2="${y}" stroke="#242a36"/>`;
-    ylab+=`<text x="${PL-8}" y="${(Y(v)+3.5).toFixed(1)}" text-anchor="end" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">€${v>=100?Math.round(v):v.toFixed(1).replace('.',',')}</text>`;});
-  const xd=[pts[0],pts[Math.floor(pts.length/2)],pts[pts.length-1]];
+    ylab+=`<text x="${PL-6}" y="${(Y(v)+4).toFixed(1)}" text-anchor="end" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">€${Number.isInteger(v)?v:v.toFixed(1).replace('.',',')}</text>`;});
+  const xd=[pts[0],middenInTijd(pts),pts[pts.length-1]];
   let xlab='';xd.forEach((p,i)=>{const a=i===0?'start':(i===2?'end':'middle');
-    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-9}" text-anchor="${a}" font-size="11" fill="#8b93a3" font-family="IBM Plex Mono">${fmtShort(p.date)}</text>`;});
+    xlab+=`<text x="${p._x.toFixed(1)}" y="${H-8}" text-anchor="${a}" font-size="12" fill="#8b93a3" font-family="IBM Plex Mono">${fmtShort(p.date)}</text>`;});
   wrap.innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="koersgrafiek">
     <defs><linearGradient id="fundgrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${col}" stop-opacity="0.22"/><stop offset="1" stop-color="${col}" stop-opacity="0"/></linearGradient></defs>
     ${grid}<path d="${area}" fill="url(#fundgrad)"/>
@@ -1132,22 +1386,52 @@ function drawFundChart(){
 }
 
 /* ---- Herbalanceren ---- */
+/* Verdeelt nieuw geld over de fondsen die onder hun doel zitten, in hele stuks.
+   Er wordt nooit verkocht. Telkens gaat één stuk naar het fonds dat in euro het
+   verst onder zijn doel zit, zolang dat stuk het fonds dichter bij zijn doel
+   brengt (dus niet meer dan een half stuk voorbij het doel schiet). */
+function herverdeel(pos,targets,add){
+  const tot=pos.reduce((s,p)=>s+p.cur,0)+add;
+  const rij=pos.map(p=>({...p,doel:tot*(Number(targets[p.isin])||0)/100,na:p.cur,stuks:0}));
+  let cash=add,guard=0;
+  while(guard++<200000){
+    let best=null;
+    for(const r of rij){
+      if(!(r.px>0)||r.px>cash+1e-9)continue;
+      const tekort=r.doel-r.na;
+      if(tekort<=r.px/2)continue;                 // zou verder van het doel brengen
+      if(!best||tekort>best.doel-best.na)best=r;
+    }
+    if(!best)break;
+    best.stuks++;best.na+=best.px;cash-=best.px;
+  }
+  const totNa=rij.reduce((s,r)=>s+r.na,0);
+  for(const r of rij)r.gewichtNa=totNa>0?r.na/totNa*100:0;
+  return {rij,rest:Math.max(cash,0),besteed:add-Math.max(cash,0)};
+}
+
 function wireRebalance(e){
   const out=$('rbOut'),amt=$('rbAmount');
   function calc(){
-    const add=Number(amt.value)||0;
-    const futureTotal=(e.totVal!=null?e.totVal:e.totInv)+add;
-    let rows='';
-    for(const p of e.pos){
-      const tgt=(TARGETS[p.isin]||0)/100;
-      const targetVal=futureTotal*tgt;
-      const cur=p.value!=null?p.value:p.invested;
-      const buy=targetVal-cur;
-      const px=p.price||p.avg;
-      const shares=px?buy/px:0;
-      rows+=`<div class="row"><span>${p.symbol}</span><span>${buy>=0?'koop':'verkoop'} ${eur(Math.abs(buy))} ${px?`· ${nf1.format(Math.abs(shares))} st.`:''}</span></div>`;
+    const add=leesBedrag(amt.value)||0;
+    if(add<=0){
+      out.innerHTML=`<div class="muted" style="font-size:12px">Vul in hoeveel je gaat storten. Ik verdeel het in hele stuks over de fondsen die onder hun doel zitten — er wordt nooit verkocht.</div>`;
+      return;
     }
-    out.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:4px">Om naar je doelen te bewegen${add?` na inleg van ${eur(add)}`:''}:</div>${rows}`;
+    const pos=e.pos.map(p=>({isin:p.isin,symbol:p.symbol,
+      cur:p.value!=null?p.value:p.invested,px:p.price||p.avg,schatting:p.price==null}));
+    const r=herverdeel(pos,TARGETS,add);
+    let rows='';
+    for(const x of r.rij){
+      const tgt=Number(TARGETS[x.isin])||0;
+      rows+=`<div class="row"><span>${x.symbol}</span><span>${x.stuks>0
+        ?`koop <b>${x.stuks} st.</b> · ${eur(x.stuks*x.px)}${x.schatting?' <span class="muted">(gem. koers)</span>':''}`
+        :'<span class="muted">niets</span>'}</span></div>
+        <div class="rb-na">na aankoop ${pctPlain(x.gewichtNa)} · doel ${tgt}%</div>`;
+    }
+    out.innerHTML=`<div class="muted" style="font-size:12px;margin-bottom:4px">Zo verdeel je ${eur(add)} zonder te verkopen:</div>${rows}
+      <div class="row rb-rest"><span>Blijft over</span><span>${eur(r.rest)}</span></div>
+      <div class="muted" style="font-size:11px;line-height:1.5;margin-top:6px">Het meeste geld gaat naar het fonds dat het verst onder zijn doel zit. Hou wat marge voor de transactiekosten.</div>`;
   }
   amt.oninput=calc;calc();
   $('rbTargets').onclick=openTargets;

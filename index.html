@@ -112,6 +112,10 @@ header .sync b{color:var(--paper);font-weight:500}
 .withdraw .note b{color:var(--paper);font-weight:500;opacity:1}
 .doel{margin:18px 0 0;border-top:1px solid var(--line);padding-top:13px}
 .doel .lead input{width:66px}
+.doel .lead #wdKap{width:92px}
+.doel-keuze{margin:6px 0 10px}
+.doel-keuze.klein{display:inline-flex;gap:6px;margin:6px 0 2px;vertical-align:middle}
+.doel-keuze .period-btn{padding:5px 11px;font-size:12px}
 .doel-btn{margin-top:10px;color:var(--brass);border-color:rgba(198,161,91,.45);padding:7px 12px;font-size:12px}
 .na-titel{margin:18px 2px 7px;font-size:12px;color:var(--paper)}
 .na-titel span{color:var(--muted);font-size:11px}
@@ -395,6 +399,9 @@ if(PROJ.infl==null)PROJ.infl=2;       // bestaande opgeslagen instellingen aanvu
 if(PROJ.opname==null)PROJ.opname=4;
 if(PROJ.eind==null)PROJ.eind=2055;    // einde van de opbouwfase
 if(PROJ.doel==null)PROJ.doel=3000;    // gewenst maandbedrag later, in geld van nu
+if(PROJ.doelSoort!=='kapitaal')PROJ.doelSoort='maand';   // vertrekpunt: maandbedrag of eindkapitaal
+if(PROJ.doelKap==null)PROJ.doelKap=1000000;              // gewenst eindkapitaal
+if(PROJ.doelKapNu==null)PROJ.doelKapNu=true;             // eindkapitaal in geld van nu (anders in euro's van het eindjaar)
 function eindJaar(){const nu=new Date().getFullYear(),v=Math.round(Number(PROJ.eind));return (v>nu&&v<=2100)?v:2055;}
 
 function load(k,def){try{const v=localStorage.getItem(k);return v?JSON.parse(v):def;}catch(e){return def;}}
@@ -1106,24 +1113,46 @@ function leesBedrag(t){const v=Number(String(t).replace(/[\s.]/g,'').replace(','
    De eindwaarde van de projectie is lineair in de maandinleg, dus twee proefruns
    (inleg 0 en inleg 1) geven het exacte antwoord binnen hetzelfde model — met
    dezelfde kosten, hetzelfde eindjaar en dezelfde maandgroei. */
-function benodigdeInleg(doelNu,c){
-  const opn=c.opnamePct/100;
-  if(!(opn>0)||!(doelNu>0))return null;
-  const K=doelNu*c.naarNu*12/opn;
+function inlegVoorKapitaal(K){
+  if(!(K>0))return null;
   const e0=projectSeries(0).slice(-1)[0], e1=projectSeries(1).slice(-1)[0];
   const nodig=k=>{const A=e1[k]-e0[k];return A>0?Math.max((K-e0[k])/A,0):null;};
   return {K,verwacht:nodig('exp'),voorzichtig:nodig('low')};
 }
+function benodigdeInleg(doelNu,c){
+  const opn=c.opnamePct/100;
+  if(!(opn>0)||!(doelNu>0))return null;
+  return inlegVoorKapitaal(doelNu*c.naarNu*12/opn);
+}
+/* Het doelkapitaal volgens het gekozen vertrekpunt, altijd nominaal in het eindjaar. */
+function doelKapitaal(c){
+  if(PROJ.doelSoort==='kapitaal'){
+    const bedrag=Number(PROJ.doelKap)||0;
+    return inlegVoorKapitaal(PROJ.doelKapNu!==false?bedrag*c.naarNu:bedrag);
+  }
+  return benodigdeInleg(Number(PROJ.doel)||0,c);
+}
 
 function renderDoel(c){
-  const b=benodigdeInleg(Number(PROJ.doel)||0,c);
+  const kap=PROJ.doelSoort==='kapitaal', inNu=PROJ.doelKapNu!==false;
+  const b=doelKapitaal(c);
   const rond=x=>Math.ceil(x/10)*10;
   const cel=x=>x==null?'—':(x<=0?'niets extra':eur0(rond(x)));
   const verw=b&&b.verwacht!=null?rond(b.verwacht):null;
   const nu=Number(PROJ.monthly)||0;
   return `<div class="doel">
-    <h4>Hoeveel moet je daarvoor storten?</h4>
-    <div class="lead">Wil je later <input id="wdDoel" type="text" inputmode="numeric" value="${Math.round(PROJ.doel)}"> € per maand in geld van nu, bij je opname van ${nf1.format(c.opnamePct)}%${b?`, dan heb je in ${c.jaartal} <b>${eurKort(b.K)}</b> nodig`:''}.</div>
+    <h4>Hoeveel moet je storten?</h4>
+    <div class="detail-periods doel-keuze">
+      <button type="button" class="period-btn${kap?'':' on'}" id="doelSoortMaand">maandbedrag later</button>
+      <button type="button" class="period-btn${kap?' on':''}" id="doelSoortKap">eindkapitaal</button>
+    </div>
+    ${kap
+      ?`<div class="lead">Wil je in ${c.jaartal} <input id="wdKap" type="text" inputmode="numeric" value="${Math.round(PROJ.doelKap)}"> € hebben
+        <span class="detail-periods doel-keuze klein">
+          <button type="button" class="period-btn${inNu?' on':''}" id="kapNu">in geld van nu</button>
+          <button type="button" class="period-btn${inNu?'':' on'}" id="kapEind">in euro's van ${c.jaartal}</button>
+        </span>${b?`<br>${inNu?`Dat is nominaal <b>${eurKort(b.K)}</b> in ${c.jaartal}`:`Dat is <b>${eurKort(b.K/c.naarNu)}</b> in geld van nu`}${c.opnamePct>0?`, goed voor ${eur0(b.K*c.opnamePct/100/12)} per maand bij je opname van ${nf1.format(c.opnamePct)}% (≈ ${eur0(b.K*c.opnamePct/100/12/c.naarNu)} nu)`:''}. Daarvoor stort je per maand:`:''}</div>`
+      :`<div class="lead">Wil je later <input id="wdDoel" type="text" inputmode="numeric" value="${Math.round(PROJ.doel)}"> € per maand in geld van nu, bij je opname van ${nf1.format(c.opnamePct)}%${b?`, dan heb je in ${c.jaartal} <b>${eurKort(b.K)}</b> nodig. Daarvoor stort je per maand:`:''}</div>`}
     ${b?`<table class="wd">
       <tbody>
         <tr class="hoofd"><td>verwacht</td><td class="maand">${cel(b.verwacht)}<span class="nu">per maand</span></td></tr>
@@ -1131,7 +1160,7 @@ function renderDoel(c){
         <tr><td>je stort nu</td><td>${eur0(nu)}<span class="nu">per maand</span></td></tr>
       </tbody></table>
       ${verw!=null&&verw>0&&verw!==nu?`<button type="button" class="k-btn doel-btn" id="doelOvernemen" data-m="${verw}">${eur0(verw)} overnemen als maandinleg</button>`:''}`
-     :`<div class="note">Zet een opnamepercentage boven 0% om dit te berekenen.</div>`}
+     :`<div class="note">${kap?'Vul een bedrag boven € 0 in om dit te berekenen.':'Zet een opnamepercentage boven 0% om dit te berekenen.'}</div>`}
   </div>`;
 }
 
@@ -1196,6 +1225,14 @@ function drawWithdraw(){
   const dn=$('wdDoel');
   if(dn){dn.oninput=()=>{const v=leesBedrag(dn.value);if(v!=null){PROJ.doel=v;savePROJ();drawWithdraw();}};
     dn.onblur=()=>{dn.value=Math.round(PROJ.doel);};}
+  const kn=$('wdKap');
+  if(kn){kn.oninput=()=>{const v=leesBedrag(kn.value);if(v!=null){PROJ.doelKap=v;savePROJ();drawWithdraw();}};
+    kn.onblur=()=>{kn.value=Math.round(PROJ.doelKap);};}
+  const zet=(id,fn)=>{const b=$(id);if(b)b.onclick=()=>{fn();savePROJ();drawWithdraw();};};
+  zet('doelSoortMaand',()=>{PROJ.doelSoort='maand';});
+  zet('doelSoortKap',()=>{PROJ.doelSoort='kapitaal';});
+  zet('kapNu',()=>{PROJ.doelKapNu=true;});
+  zet('kapEind',()=>{PROJ.doelKapNu=false;});
   const ov=$('doelOvernemen');
   if(ov)ov.onclick=()=>{PROJ.monthly=Number(ov.dataset.m)||0;savePROJ();
     const pm=$('projMon');if(pm)pm.value=PROJ.monthly;drawProjection();};

@@ -1,21 +1,21 @@
 {
-  "updated": "2026-10-23",
+  "updated": "2026-10-26",
   "prices": {
     "IE00B4L5Y983": {
-      "price": 129.89,
-      "date": "2026-10-23",
+      "price": 130.53,
+      "date": "2026-10-26",
       "ccy": "EUR",
       "symbol": "IWDA.AS"
     },
     "IE00BCBJG560": {
-      "price": 127.54,
-      "date": "2026-10-23",
+      "price": 128.42,
+      "date": "2026-10-26",
       "ccy": "EUR",
       "symbol": "ZPRS.DE"
     },
     "IE00BKM4GZ66": {
-      "price": 45.515,
-      "date": "2026-10-23",
+      "price": 45.335,
+      "date": "2026-10-26",
       "ccy": "EUR",
       "symbol": "EMIM.AS"
     }
